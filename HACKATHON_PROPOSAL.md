@@ -8,7 +8,7 @@ AURA-MOM PRO is a low-cost, wearable, multimodal maternal-fetal monitoring belt.
 
 ### Why it wins the Vishwakarma Awards:
 *   **Hardware Innovation (Budget-Friendly):** By pairing a 24-bit medical-grade AFE (TI ADS1298) with an ultra-low-cost ESP32-S3 microcontroller, we bring the total prototype cost under **30,000 INR**.
-*   **Edge AI (Adaptive Filtering):** Instead of relying on computationally heavy algorithms like FastICA which drain battery, we implemented an Edge-optimized Hybrid Adaptive Filter (RLS/NLMS). This allows the ESP32-S3 to extract the fetal ECG in real-time, completely offline.
+*   **Edge AI (Adaptive Filtering):** Instead of relying on computationally heavy algorithms like FastICA which drain battery, we implemented an Edge-optimized **NLMS (Normalized Least Mean Squares)** Adaptive Filter. This $O(N)$ algorithm allows the ESP32-S3 to extract the fetal ECG in real-time, completely offline without crashing loop timing.
 *   **Scalability:** The data is sent via BLE to a cross-platform mobile app (Flutter) for the mother, and synced to a robust clinical dashboard (React) for remote triage.
 
 ## 3. Proof of Work (The GitHub Repository)

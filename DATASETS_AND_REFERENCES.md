@@ -15,6 +15,9 @@ To validate our Hybrid Adaptive Filtering (RLS/NLMS) and PVDF sensor outputs wit
    - **Link:** [https://physionet.org/content/sufhsdb/1.0.1/](https://physionet.org/content/sufhsdb/1.0.1/)
    - **Use Case:** Validating our acoustic PVDF contact sensor pipeline for fetal phonocardiogram (PCG) analysis.
 
+4. **Induced Cesarean EHG DataSet (ICEHG DS)**
+   - **Use Case:** Advanced evaluation of uterine activity models, offering a newer validation benchmark alongside TPEHG.
+
 ## Open Source Inspirations (GitHub)
 Instead of building the software stack from scratch, we will fork or take heavy inspiration from these existing repositories to fit within hackathon timelines:
 

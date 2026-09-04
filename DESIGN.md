@@ -263,7 +263,7 @@ components:
 
 ### Frontend Clone Strategy (Hackathon Optimization)
 To accelerate development, we will adapt open-source templates rather than building from scratch:
-- **Patient Mobile App:** Built on **Flutter**. Inspired by repositories like `Pregcare` and `Remote-pregnancy-monitor` (Flutter + Firebase) for cross-platform deployment.
+- **Patient Mobile App:** Built on **Flutter**. Inspired by repositories like `Pregcare` and `Remote-pregnancy-monitor` (Flutter + Firebase) for cross-platform deployment. **CRITICAL:** High-frequency ECG rendering must use `syncfusion_flutter_charts` and `RepaintBoundary` widgets. We must buffer the BLE stream and update the UI at 30 FPS rather than per-byte to prevent app freezing.
 - **Clinician Dashboard:** Built on **React**. Inspired by repositories like `Smart Health Monitoring System`, utilizing `recharts` for live visualization of the 8-channel biopotentials. 
 _Both platforms will strictly adhere to the IBM Carbon Design System styling documented below._
 
@@ -566,9 +566,9 @@ The brand commits to flat 0px corners. The other tokens exist for product / mobi
 | **IMU** | Bosch BMI270 or equivalent | Maternal motion, belt movement and artifact gating; future movement-event analysis. |
 | **Temperature** | MAX30205 or equivalent | Temperature trend/context. |
 | **Optical** | ADPD4100 or simpler MAX30102-class prototype module | Maternal PPG, pulse and SpO₂ context. Keep physically separated from abdominal electrodes if needed. |
-| **MCU** | nRF5340 or ESP32-S3 | BLE, acquisition control, DSP and edge processing. Choose based on team familiarity and power budget. |
+| **MCU** | nRF5340 or ESP32-S3 | BLE, acquisition control, DSP and edge processing. Choose based on team familiarity and power budget. **MUST use digital optoisolators between MCU and AFE.** |
 | **Storage** | Flash / microSD | Raw/processed waveform capture for debugging and offline analysis. |
-| **Power** | Li-ion/LiPo + charger/power-path IC | Battery-only patient-connected prototype; no mains-connected patient operation. |
+| **Power** | Li-ion/LiPo + charger/power-path IC | **STRICTLY Battery-only patient-connected prototype**; no mains-connected patient operation to prevent micro-shocks. |
 | **Mechanical** | Breathable belt + skin-contact enclosure | Stable sensor pressure and repeatable placement without excessive compression. |
 
 ## Electrode / Sensor Placement Concept
