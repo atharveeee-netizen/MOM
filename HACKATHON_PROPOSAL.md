@@ -7,8 +7,8 @@ Current fetal monitoring solutions (like Cardiotocography/CTG machines) are bulk
 AURA-MOM PRO is a low-cost, wearable, multimodal maternal-fetal monitoring belt. It uses an 8-channel biopotential array (fECG/EHG) and acoustic sensors (PVDF) to monitor the fetus and mother simultaneously. 
 
 ### Why it wins the Vishwakarma Awards:
-*   **Hardware Innovation (Budget-Friendly):** By pairing a 24-bit medical-grade AFE (TI ADS1298) with an ultra-low-cost ESP32-S3 microcontroller, we bring the total prototype cost under **30,000 INR**.
-*   **Edge AI (Adaptive Filtering):** Instead of relying on computationally heavy algorithms like FastICA which drain battery, we implemented an Edge-optimized **NLMS (Normalized Least Mean Squares)** Adaptive Filter. This $O(N)$ algorithm allows the ESP32-S3 to extract the fetal ECG in real-time, completely offline without crashing loop timing.
+*   **Hardware Innovation (Budget-Friendly):** By pairing a 24-bit medical-grade AFE (TI ADS1298) with an ultra-low-power **Nordic nRF52840 (Cortex-M4F)**, we bring the total prototype cost under **30,000 INR**.
+*   **Edge AI (Adaptive Filtering):** Instead of relying on computationally heavy algorithms like FastICA which drain battery, we implemented an Edge-optimized **NLMS (Normalized Least Mean Squares)** Adaptive Filter. This $O(N)$ algorithm allows the Cortex-M4F to extract the fetal ECG in real-time, completely offline without crashing loop timing.
 *   **Scalability:** The data is sent via BLE to a cross-platform mobile app (Flutter) for the mother, and synced to a robust clinical dashboard (React) for remote triage.
 
 ## 3. Proof of Work (The GitHub Repository)

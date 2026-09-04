@@ -563,12 +563,12 @@ The brand commits to flat 0px corners. The other tokens exist for product / mobi
 | **Biopotential AFE** | TI ADS1298 / ADS1298R | 8-channel, 24-bit ECG-grade acquisition; RLD and high CMRR. Shared channels support ECG + EHG branches. |
 | **Abdominal electrodes** | Ag/AgCl or validated reusable dry electrodes | Use a flexible array. Final geometry must be experimentally validated; do not assume one geometry is clinically universal. |
 | **PVDF acoustic front end** | PVDF + high-impedance charge amplifier | PVDF is a mechanical/acoustic supporting channel. Do not connect raw PVDF directly to a low-impedance MCU ADC. |
-| **IMU** | Bosch BMI270 or equivalent | Maternal motion, belt movement and artifact gating; future movement-event analysis. |
-| **Temperature** | MAX30205 or equivalent | Temperature trend/context. |
+| **IMU** | Adafruit LIS3DH 3-Axis Accelerometer | Ultra-low power (2uA) maternal motion, belt movement and artifact gating; future movement-event analysis. |
+| **Temperature** | SmartElex TMP117 (Medical-grade ASTM E1112) | High-precision temperature trend/context for maternal fever risk. |
 | **Optical** | ADPD4100 or simpler MAX30102-class prototype module | Maternal PPG, pulse and SpO₂ context. Keep physically separated from abdominal electrodes if needed. |
-| **MCU** | nRF5340 or ESP32-S3 | BLE, acquisition control, DSP and edge processing. Choose based on team familiarity and power budget. **MUST use digital optoisolators between MCU and AFE.** |
+| **MCU** | RAKwireless RAK4631 (Nordic nRF52840) | BLE 5.0, acquisition control, DSP and edge processing via Cortex-M4F. **MUST use digital optoisolators between MCU and AFE.** |
 | **Storage** | Flash / microSD | Raw/processed waveform capture for debugging and offline analysis. |
-| **Power** | Li-ion/LiPo + charger/power-path IC | **STRICTLY Battery-only patient-connected prototype**; no mains-connected patient operation to prevent micro-shocks. |
+| **Power** | EVE 18650 3500mAh Li-ion + RAK19009 | **STRICTLY Battery-only patient-connected prototype**; no mains-connected patient operation to prevent micro-shocks. |
 | **Mechanical** | Breathable belt + skin-contact enclosure | Stable sensor pressure and repeatable placement without excessive compression. |
 
 ## Electrode / Sensor Placement Concept

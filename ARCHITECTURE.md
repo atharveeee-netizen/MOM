@@ -6,7 +6,7 @@
 3. Separate digital branches for ECG/fECG, EHG and acoustic signals.
 4. IMU-driven motion/artifact quality index; reject or down-weight corrupted windows.
 5. Maternal QRS detection/template estimation and spatial separation of maternal vs fetal components.
-6. Adaptive Filtering specifically using **NLMS (Normalized Least Mean Squares)** combined with modified Pan-Tompkins. NLMS is chosen over RLS due to $O(N)$ complexity, ensuring efficient real-time fECG extraction on edge hardware (ESP32-S3) without crashing the loop timing.
+6. Adaptive Filtering specifically using **NLMS (Normalized Least Mean Squares)** combined with modified Pan-Tompkins. NLMS is chosen over RLS due to $O(N)$ complexity, ensuring efficient real-time fECG extraction on edge hardware (Nordic nRF52840 / Cortex-M4F) without crashing the loop timing.
 7. Fetal QRS detection → fetal heart-rate series → signal-quality score.
 8. EHG feature extraction: contraction timing, spectral features and inter-channel propagation/conduction features.
 9. PVDF feature extraction: heart-sound/acoustic periodicity and signal-quality features.
