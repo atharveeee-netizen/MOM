@@ -564,7 +564,7 @@ The brand commits to flat 0px corners. The other tokens exist for product / mobi
 | Subsystem | Component | Role |
 | :--- | :--- | :--- |
 | **Biopotential AFE** | TI ADS1298 / ADS1298R (Medical Grade) | 8-channel, 24-bit ECG-grade acquisition; RLD and high CMRR. Shared channels support ECG + EHG branches. |
-| **Abdominal electrodes** | Ag/AgCl or validated reusable dry electrodes (Medical Grade) | Use a flexible array. Final geometry must be experimentally validated; do not assume one geometry is clinically universal. |
+| **Abdominal electrodes** | Ag/AgCl or validated reusable dry electrodes (Medical Grade) | **MUST use shielded coaxial cables.** Long unshielded wires act as antennas for 50Hz mains noise, destroying fECG signals. |
 | **PVDF acoustic front end** | PVDF + high-impedance charge amplifier (Industrial Grade) | PVDF is a mechanical/acoustic supporting channel. Do not connect raw PVDF directly to a low-impedance MCU ADC. |
 | **IMU** | Adafruit LIS3DH 3-Axis Accelerometer (Industrial Grade) | Ultra-low power (2uA) maternal motion, belt movement and artifact gating; future movement-event analysis. |
 | **Temperature** | SmartElex TMP117 (Medical-grade ASTM E1112) | High-precision temperature trend/context for maternal fever risk. |
@@ -572,7 +572,7 @@ The brand commits to flat 0px corners. The other tokens exist for product / mobi
 | **MCU** | RAKwireless RAK4631 (Nordic nRF52840) (Industrial Rating) | BLE 5.0, acquisition control, DSP and edge processing via Cortex-M4F. **MUST use digital optoisolators between MCU and AFE.** |
 | **Storage** | Flash / microSD | Raw/processed waveform capture for debugging and offline analysis. |
 | **Power** | EVE 18650 3500mAh Li-ion + RAK19009 (Industrial Grade) | **STRICTLY Battery-only patient-connected prototype**; no mains-connected patient operation to prevent micro-shocks. |
-| **Mechanical** | Breathable belt + skin-contact enclosure | Stable sensor pressure and repeatable placement without excessive compression. |
+| **Mechanical** | Curved 3D-Printed TPU Shell + Conductive Fabric | Enclosure must be soft/flexible TPU (no rigid PCBs digging into the abdomen). Stable sensor pressure and repeatable placement without excessive compression. |
 
 ## Electrode / Sensor Placement Concept
 Use a spatial abdominal array so that multiple channels observe different mixtures of maternal ECG, fetal ECG, uterine electrical activity and noise. EHG literature commonly uses electrodes around/below the navel, while fetal ECG arrays vary with study and gestational age. Therefore the V1 belt should use an adjustable, documented array and collect placement metadata for every recording.

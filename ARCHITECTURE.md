@@ -23,7 +23,7 @@
 ## Software / Data Architecture Layers
 | Layer | Responsibilities |
 | :--- | :--- |
-| **Firmware** | AFE driver, synchronized sampling, IMU, battery, BLE, local storage, sensor diagnostics. |
+| **Firmware** | AFE driver, IMU, battery. **CRITICAL:** Must enforce BLE Data Length Extension (DLE) and 2M PHY to prevent buffer overflow from 8-channel 500Hz streaming. |
 | **DSP** | Filtering, mains rejection, motion gating, Adaptive Filtering (NLMS), QRS detection, EHG and PVDF feature extraction. |
 | **Edge AI** | Feature fusion, personalized baseline, confidence score and alert state. |
 | **Mobile app** | Pairing, belt-placement guidance, live signal quality, trends, symptoms and BP-device integration. |

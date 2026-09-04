@@ -18,6 +18,7 @@ This repository serves as our comprehensive architectural blueprint and proof of
 *   **Dataset Identification & Validation Plan** (`DATASETS_AND_REFERENCES.md`)
 *   **Clinical Boundary Rules** (`AGENTS.md`)
 
-## 4. Video Demonstration Plan
+## 4. Video Demonstration Plan (The "Audio-Jack" Bench Test)
 *(To be recorded and linked here)*
-We will demonstrate the hardware acquisition pipeline through a **Signal-Injection Bench Test**. By injecting known maternal and fetal ECG signals into our ADS1298 board, we will prove that our Edge AI adaptive filters can successfully separate the fetal heartbeat in real-time.
+Since we cannot clinically test on a pregnant human during the hackathon, we will demonstrate the hardware acquisition pipeline through a **DAC Audio-Jack Signal Injection Bench Test**. 
+We will play the PhysioNet maternal/fetal ECG datasets from a laptop's audio jack, pass the signal through a simple voltage-divider resistor network, and clip it directly to the physical ADS1298 electrodes. This will prove that our hardware and Edge AI adaptive filters can successfully separate the fetal heartbeat in real-time from a physical analog source.
