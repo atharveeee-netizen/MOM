@@ -23,8 +23,8 @@
 ## Software / Data Architecture Layers
 | Layer | Responsibilities |
 | :--- | :--- |
-| **Firmware** | AFE driver, IMU, battery. **CRITICAL:** Must enforce BLE Data Length Extension (DLE) and 2M PHY to prevent buffer overflow from 8-channel 500Hz streaming. |
-| **DSP** | Filtering, mains rejection, motion gating, Adaptive Filtering (NLMS), QRS detection, EHG and PVDF feature extraction. |
+| **Firmware** | AFE driver (Strict TI Boot Sequence), IMU, battery. **CRITICAL:** Must enforce BLE Data Length Extension (DLE) and 2M PHY. **CRITICAL:** Do NOT save continuous waveform data to internal Flash NVS to avoid hardware destruction; use external SD or RAM ring buffers. |
+| **DSP** | **CRITICAL:** 0.5Hz High-Pass Filter (Butterworth) for maternal baseline wander removal. Mains rejection, motion gating, Adaptive Filtering (NLMS), QRS detection, EHG/PVDF feature extraction. |
 | **Edge AI** | Feature fusion, personalized baseline, confidence score and alert state. |
 | **Mobile app** | Pairing, belt-placement guidance, live signal quality, trends, symptoms and BP-device integration. |
 | **Clinician dashboard** | FHR/MHR/EHG trends, signal quality, maternal vitals, event timeline and raw-waveform review. |

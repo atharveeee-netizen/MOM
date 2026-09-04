@@ -570,7 +570,7 @@ The brand commits to flat 0px corners. The other tokens exist for product / mobi
 | **Temperature** | SmartElex TMP117 (Medical-grade ASTM E1112) | High-precision temperature trend/context for maternal fever risk. |
 | **Optical** | ADPD4100 or simpler MAX30102-class module | Maternal PPG, pulse and SpO₂ context. Keep physically separated from abdominal electrodes if needed. |
 | **MCU** | RAKwireless RAK4631 (Nordic nRF52840) (Industrial Rating) | BLE 5.0, acquisition control, DSP and edge processing via Cortex-M4F. **MUST use digital optoisolators between MCU and AFE.** |
-| **Storage** | Flash / microSD | Raw/processed waveform capture for debugging and offline analysis. |
+| **Storage** | External SD Card or QSPI Flash | **MUST NOT write waveforms to internal NVS Flash** (exceeds 100k write limits). Use external SD card via ring buffer for raw waveform capture. |
 | **Power** | EVE 18650 Li-ion + RAK19009 + **Ultra-Low Noise LDO (e.g. TPS7A)** | **STRICTLY Battery-only**. MUST use an Ultra-Low Noise LDO dedicated to the ADS1298 Analog supply (AVdd) to reject switching noise. |
 | **Mechanical** | Curved 3D-Printed TPU Shell + Conductive Fabric | Enclosure must be soft/flexible TPU (no rigid PCBs digging into the abdomen). Stable sensor pressure and repeatable placement without excessive compression. |
 
