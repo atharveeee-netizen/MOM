@@ -557,18 +557,21 @@ The brand commits to flat 0px corners. The other tokens exist for product / mobi
 - Dark mode is documented in Carbon as Gray-100 theme but isn't exposed on these marketing pages — only the footer inverts. The full dark theme is a separate Carbon palette not extracted here.
 - The community.ibm.com sub-domain uses a different chrome (community-platform white-label) that approximates Carbon but isn't strict — the documented system applies to ibm.com proper.
 
-## Hardware Block Specification
-| Subsystem | Recommended choice | Design role |
+## Hardware Block Specification (Industry/Medical Grade)
+
+*All components below must be treated as strict industry-grade hardware by firmware engineers. Do not use blocking delays or hobbyist code structures (e.g., standard Arduino `delay()`).*
+
+| Subsystem | Component | Role |
 | :--- | :--- | :--- |
-| **Biopotential AFE** | TI ADS1298 / ADS1298R | 8-channel, 24-bit ECG-grade acquisition; RLD and high CMRR. Shared channels support ECG + EHG branches. |
-| **Abdominal electrodes** | Ag/AgCl or validated reusable dry electrodes | Use a flexible array. Final geometry must be experimentally validated; do not assume one geometry is clinically universal. |
-| **PVDF acoustic front end** | PVDF + high-impedance charge amplifier | PVDF is a mechanical/acoustic supporting channel. Do not connect raw PVDF directly to a low-impedance MCU ADC. |
-| **IMU** | Adafruit LIS3DH 3-Axis Accelerometer | Ultra-low power (2uA) maternal motion, belt movement and artifact gating; future movement-event analysis. |
+| **Biopotential AFE** | TI ADS1298 / ADS1298R (Medical Grade) | 8-channel, 24-bit ECG-grade acquisition; RLD and high CMRR. Shared channels support ECG + EHG branches. |
+| **Abdominal electrodes** | Ag/AgCl or validated reusable dry electrodes (Medical Grade) | Use a flexible array. Final geometry must be experimentally validated; do not assume one geometry is clinically universal. |
+| **PVDF acoustic front end** | PVDF + high-impedance charge amplifier (Industrial Grade) | PVDF is a mechanical/acoustic supporting channel. Do not connect raw PVDF directly to a low-impedance MCU ADC. |
+| **IMU** | Adafruit LIS3DH 3-Axis Accelerometer (Industrial Grade) | Ultra-low power (2uA) maternal motion, belt movement and artifact gating; future movement-event analysis. |
 | **Temperature** | SmartElex TMP117 (Medical-grade ASTM E1112) | High-precision temperature trend/context for maternal fever risk. |
-| **Optical** | ADPD4100 or simpler MAX30102-class prototype module | Maternal PPG, pulse and SpO₂ context. Keep physically separated from abdominal electrodes if needed. |
-| **MCU** | RAKwireless RAK4631 (Nordic nRF52840) | BLE 5.0, acquisition control, DSP and edge processing via Cortex-M4F. **MUST use digital optoisolators between MCU and AFE.** |
+| **Optical** | ADPD4100 or simpler MAX30102-class module | Maternal PPG, pulse and SpO₂ context. Keep physically separated from abdominal electrodes if needed. |
+| **MCU** | RAKwireless RAK4631 (Nordic nRF52840) (Industrial Rating) | BLE 5.0, acquisition control, DSP and edge processing via Cortex-M4F. **MUST use digital optoisolators between MCU and AFE.** |
 | **Storage** | Flash / microSD | Raw/processed waveform capture for debugging and offline analysis. |
-| **Power** | EVE 18650 3500mAh Li-ion + RAK19009 | **STRICTLY Battery-only patient-connected prototype**; no mains-connected patient operation to prevent micro-shocks. |
+| **Power** | EVE 18650 3500mAh Li-ion + RAK19009 (Industrial Grade) | **STRICTLY Battery-only patient-connected prototype**; no mains-connected patient operation to prevent micro-shocks. |
 | **Mechanical** | Breathable belt + skin-contact enclosure | Stable sensor pressure and repeatable placement without excessive compression. |
 
 ## Electrode / Sensor Placement Concept

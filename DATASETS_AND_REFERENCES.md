@@ -27,3 +27,12 @@ Instead of building the software stack from scratch, we will fork or take heavy 
 
 - **Clinician Dashboard (React):**
   - [Smart Health Monitoring System](https://github.com/vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHzHsYDxSMegNeuwBgy1693IeO1BNXnlOoqxCeDgTIT2ev4ISpkoSozIS0oZbdgkT2XMcUCaPROuyoSOUm4hQUBBxlgQKpKKorOekKcm4O69MhyoLgHZ4mZZwSjhzRuGYzpnqMiXNhedxaeDkvv) (For Recharts live-streaming integration).
+
+## Advanced Firmware & Edge AI References (For Autonomous Coding Agents)
+When developing the C++ firmware and Edge AI models for the Nordic nRF52840, refer to these repositories for architectural guidance:
+
+1. **Zephyr RTOS ECG Integration:**
+   - [Zephyr Project Sensor Samples](https://github.com/zephyrproject-rtos/zephyr/tree/main/samples/sensor) (Use as reference for writing DeviceTree `.overlay` files and I2C/SPI sensor ingestion).
+2. **TinyML / Edge Impulse on Cortex-M4F:**
+   - [Official Edge Impulse Nordic Firmware](https://github.com/edgeimpulse/firmware-nordic-nrf52840dk-nrf5340dk) (Reference for Data Forwarder ingestion and C++ model deployment).
+   - [Tinycardia](https://github.com/infinesm/Tinycardia) (Reference for lightweight ECG anomaly detection and R-R interval feature extraction on Cortex-M4).
