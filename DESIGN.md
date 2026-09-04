@@ -571,7 +571,7 @@ The brand commits to flat 0px corners. The other tokens exist for product / mobi
 | **Optical** | ADPD4100 or simpler MAX30102-class module | Maternal PPG, pulse and SpO₂ context. Keep physically separated from abdominal electrodes if needed. |
 | **MCU** | RAKwireless RAK4631 (Nordic nRF52840) (Industrial Rating) | BLE 5.0, acquisition control, DSP and edge processing via Cortex-M4F. **MUST use digital optoisolators between MCU and AFE.** |
 | **Storage** | Flash / microSD | Raw/processed waveform capture for debugging and offline analysis. |
-| **Power** | EVE 18650 3500mAh Li-ion + RAK19009 (Industrial Grade) | **STRICTLY Battery-only patient-connected prototype**; no mains-connected patient operation to prevent micro-shocks. |
+| **Power** | EVE 18650 Li-ion + RAK19009 + **Ultra-Low Noise LDO (e.g. TPS7A)** | **STRICTLY Battery-only**. MUST use an Ultra-Low Noise LDO dedicated to the ADS1298 Analog supply (AVdd) to reject switching noise. |
 | **Mechanical** | Curved 3D-Printed TPU Shell + Conductive Fabric | Enclosure must be soft/flexible TPU (no rigid PCBs digging into the abdomen). Stable sensor pressure and repeatable placement without excessive compression. |
 
 ## Electrode / Sensor Placement Concept
