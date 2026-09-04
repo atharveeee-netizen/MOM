@@ -1,7 +1,13 @@
 # Project Plan: AURA-MOM PRO
 
 ## Purpose
-This document hands over the proposed AURA-MOM architecture to the hardware, firmware, DSP/AI, mechanical and clinical-research team. It defines the V1 prototype architecture, sensing roles, signal-processing pipeline, data flow, validation plan and key safety/claim boundaries.
+This document hands over the proposed AURA-MOM architecture to the hardware, firmware, DSP/AI, mechanical and clinical-research team. It defines the V1 prototype architecture tailored specifically for the Maker Bhavan Foundation **Vishwakarma Awards** (optimizing for the 30k INR prototype budget, innovation, and hardware viability).
+
+## Hackathon Deliverables
+- [ ] **Hardware Prototype:** ADS1298 + ESP32-S3 acquisition board (Proof of <$300 cost vs $10,000 CTG machines).
+- [ ] **Descriptive Proposal:** Emphasizing the edge-compute efficiency (Adaptive Filtering).
+- [ ] **Video Demonstration:** Signal-injection bench test proving the hardware acquisition works.
+- [ ] **GitHub Proof-of-Work:** This repository containing the AI context, DSP architecture, and UI plans.
 
 ## Domain
 Health Tech • Maternal, Adolescent & Menstrual Health Tech • Emergency Response & Remote Monitoring

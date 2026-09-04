@@ -14,5 +14,10 @@
 ## Datasets for Algorithm Development
 *   **Fetal ECG:** PhysioNet NIFECG (Non-Invasive Fetal ECG) dataset.
 *   **EHG:** Term-Preterm EHG dataset (TPEHG).
+*   **Acoustic / PCG:** Shiraz University Fetal Heart Sounds (SUFHS) dataset for PVDF sensor validation.
 
-_Note: Preprocessing scripts for these public datasets must be prepared to benchmark fECG and EHG algorithms._
+_Note: Preprocessing scripts for these public datasets must be prepared to benchmark algorithms._
+
+## Software Stack & Frontend Frameworks
+*   **Patient App:** Flutter (Cross-platform iOS/Android deployment for accessibility).
+*   **Clinician Dashboard:** React (Web-based dashboard with robust charting libraries like Recharts for live signal monitoring).

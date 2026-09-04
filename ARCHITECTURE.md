@@ -6,7 +6,7 @@
 3. Separate digital branches for ECG/fECG, EHG and acoustic signals.
 4. IMU-driven motion/artifact quality index; reject or down-weight corrupted windows.
 5. Maternal QRS detection/template estimation and spatial separation of maternal vs fetal components.
-6. FastICA / related blind-source-separation methods as an experimental V1 approach.
+6. Hybrid Adaptive Filtering (RLS/NLMS) combined with modified Pan-Tompkins for efficient real-time fECG extraction on edge hardware (ESP32-S3).
 7. Fetal QRS detection → fetal heart-rate series → signal-quality score.
 8. EHG feature extraction: contraction timing, spectral features and inter-channel propagation/conduction features.
 9. PVDF feature extraction: heart-sound/acoustic periodicity and signal-quality features.
@@ -24,7 +24,7 @@
 | Layer | Responsibilities |
 | :--- | :--- |
 | **Firmware** | AFE driver, synchronized sampling, IMU, battery, BLE, local storage, sensor diagnostics. |
-| **DSP** | Filtering, mains rejection, motion gating, ICA/separation, QRS detection, EHG and PVDF feature extraction. |
+| **DSP** | Filtering, mains rejection, motion gating, Adaptive Filtering (RLS/NLMS), QRS detection, EHG and PVDF feature extraction. |
 | **Edge AI** | Feature fusion, personalized baseline, confidence score and alert state. |
 | **Mobile app** | Pairing, belt-placement guidance, live signal quality, trends, symptoms and BP-device integration. |
 | **Clinician dashboard** | FHR/MHR/EHG trends, signal quality, maternal vitals, event timeline and raw-waveform review. |

@@ -261,6 +261,14 @@ components:
 
 ## Overview
 
+### Frontend Clone Strategy (Hackathon Optimization)
+To accelerate development, we will adapt open-source templates rather than building from scratch:
+- **Patient Mobile App:** Built on **Flutter**. Inspired by repositories like `Pregcare` and `Remote-pregnancy-monitor` (Flutter + Firebase) for cross-platform deployment.
+- **Clinician Dashboard:** Built on **React**. Inspired by repositories like `Smart Health Monitoring System`, utilizing `recharts` for live visualization of the 8-channel biopotentials. 
+_Both platforms will strictly adhere to the IBM Carbon Design System styling documented below._
+
+### IBM Design System Implementation
+
 IBM's marketing system is a faithful application of **Carbon Design System** — IBM's open-source enterprise design system. The dominant surface is `{colors.canvas}` pure white with `{colors.surface-1}` light gray for elevation, charcoal `{colors.ink}` (#161616) for text, and IBM Blue `{colors.primary}` (#0f62fe) as the single brand accent.
 
 The defining choice is **flat geometry**: every CTA, every card, every input, every container uses square corners (`{rounded.none}` 0px) with thin 1px borders. There are no rounded pills, no soft shadows, no atmospheric gradients. The system is engineered, not stylized.

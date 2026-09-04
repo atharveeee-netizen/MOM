@@ -12,3 +12,11 @@
 
 ## Current Handover Status
 **V1 ARCHITECTURE — READY FOR SCHEMATIC + BENCH PROTOTYPING**
+
+## Hackathon Submission Status (Vishwakarma Awards)
+- [x] SOTA Analysis & Algorithm Selection
+- [x] Dataset Identification
+- [x] Architecture & Design System (IBM Carbon) Finalization
+- [ ] Hardware Prototype Assembly (Budget < 30k INR)
+- [ ] Signal Injection Bench Test (Video Demo)
+- [ ] Final Proposal Submission
