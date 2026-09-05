@@ -7,7 +7,7 @@ This document provides the complete hardware, firmware, and algorithmic architec
 
 ## 1. Physical Hardware Architecture
 
-The AURA-MOM PRO wearable hardware comprises four tightly coupled sub-systems designed for medical-grade bio-potential acquisition, deterministic real-time processing, and ultra-low-power telemetry.
+The AURA-MOM PRO wearable hardware comprises four tightly coupled sub-systems designed for high-precision bio-potential acquisition, deterministic real-time processing, and ultra-low-power telemetry.
 
 ```mermaid
 graph TD

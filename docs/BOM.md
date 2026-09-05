@@ -14,7 +14,7 @@ This BOM details the *estimated* prototype cost of the proposed AURA-MOM PRO har
 | **Passive Components** | Resistors, Capacitors (0402/0603) | Various | ~50 | $0.01 | $0.50 |
 | **Connectors** | 10-pin Snap connectors for ECG leads | ECG Snap | 4 | $0.25 | $1.00 |
 | **PCB Manufacturing** | 4-Layer FR4 (Prototype Run - JLCPCB/PCBWay) | Custom | 1 | $2.00 | $2.00 |
-| **Enclosure** | 3D Printed Medical-Grade PLA/Resin | Custom | 1 | $3.00 | $3.00 |
+| **Enclosure** | 3D Printed Biocompatible Resin/Polymer | Custom | 1 | $3.00 | $3.00 |
 
 ### Cost Analysis
 - **Total Estimated BOM Cost (1 Unit):** $31.25 USD (~₹2,600 INR)
