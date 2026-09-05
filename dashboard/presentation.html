@@ -492,13 +492,13 @@
             </tr>
             <tr>
               <td><strong>Execution Latency</strong></td>
-              <td class="highlight-cell">7.5 µs / sample</td>
+              <td class="highlight-cell">7.5 µs (SIL) / ~3.75 µs (MCU)</td>
               <td>~45,000 µs / segment</td>
               <td><span class="badge badge-info">Deterministic Real-Time</span></td>
             </tr>
             <tr>
               <td><strong>Memory Footprint</strong></td>
-              <td class="highlight-cell">&lt; 1 KB SRAM</td>
+              <td class="highlight-cell">&lt; 1 KB SRAM (128 B state)</td>
               <td>40.86 MB Weights</td>
               <td><span class="badge badge-success">Fits in 256KB MCU RAM</span></td>
             </tr>
@@ -534,19 +534,21 @@
             </ul>
           </div>
           <div class="card">
-            <div class="card-title">Reproducible Results Summary</div>
+            <div class="card-title">Reproducible Results Summary (148 Segments)</div>
             <div class="grid-2" style="margin-top: 0.5rem;">
               <div>
-                <div class="metric-hero" style="font-size: 1.8rem; color: var(--accent-green);">0.1005 mV</div>
-                <div class="metric-sub">Extraction RMSE</div>
+                <div class="metric-hero" style="font-size: 1.6rem; color: var(--accent-green);">0.1005 mV</div>
+                <div style="font-size: 0.72rem; color: #94a3b8; font-weight: 500;">± 0.0960 | Med: 0.0724 [IQR: 0.045–0.110]</div>
+                <div class="metric-sub" style="margin-top: 2px;">Extraction RMSE (95% CI: [0.030, 0.451])</div>
               </div>
               <div>
-                <div class="metric-hero" style="font-size: 1.8rem; color: var(--accent-cyan);">0.0810 mV</div>
-                <div class="metric-sub">Extraction MAE</div>
+                <div class="metric-hero" style="font-size: 1.6rem; color: var(--accent-cyan);">0.0810 mV</div>
+                <div style="font-size: 0.72rem; color: #94a3b8; font-weight: 500;">± 0.0761 | Med: 0.0584 [IQR: 0.035–0.091]</div>
+                <div class="metric-sub" style="margin-top: 2px;">Extraction MAE (95% CI: [0.023, 0.319])</div>
               </div>
             </div>
             <div style="margin-top: 0.75rem; font-size: 0.8rem; color: var(--text-muted);">
-              Executed via: <code>ml/classical/nlms.py</code> (148 test segments).
+              Executed via: <code>ml/classical/nlms.py</code> (32-tap FIR, &mu;=0.05, &epsilon;=1e-8).
             </div>
           </div>
         </div>
