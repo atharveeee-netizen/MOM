@@ -16,10 +16,10 @@ Commercial wearables charge a massive premium for putting a Texas Instruments AF
 *Why DIY prototypes fail:* Hobbyists use standard jumper wires or unshielded cables for electrodes. A 1-meter unshielded wire on a pregnant abdomen acts as a massive radio antenna, picking up 50Hz/60Hz mains hum from the room's electrical wiring, completely overwhelming the fetal heartbeat.
 *   **The Fix:** You MUST use **Shielded Coaxial Cables** for every single electrode. The outer shield of the coaxial cable must be driven by the **Right Leg Drive (RLD)** circuit of the ADS1298. This actively cancels out common-mode noise before it even reaches the silicon.
 
-## 4. Mechanical Design (The "Belly" Fix)
-*Why DIY prototypes fail:* Taping a rigid, sharp PCB and heavy batteries to a pregnant mother's abdomen is dangerous and ergonomically unacceptable. Furthermore, if the electrodes shift even 1mm during movement, it creates massive motion artifacts.
-*   **The Enclosure:** The electronics and battery must be housed in a **Curved, 3D-Printed TPU (Thermoplastic Polyurethane) Shell**. TPU is a flexible, rubber-like filament. The curvature must match the average 3rd-trimester abdomen.
-*   **The Belt:** Use a wide, breathable, elastic maternal support band. The electrodes must be embedded into the fabric to guarantee constant, uniform pressure against the skin without restricting blood flow or breathing.
+## 4. Mechanical Design (The "Hybrid Rigid-Fabric" Pivot)
+*Why DIY prototypes fail:* Printing an entire 8-channel flexible PCB (Kapton FPC) is prohibitively expensive ($150+ per prototype) and tears easily under maternal movement. Taping a rigid, sharp PCB to an abdomen is dangerous.
+*   **The Enclosure (The "Brain"):** The MCU, LDO, and ADS1298 must be printed on a tiny, standard Rigid FR4 PCB (costs <$5). This rigid board is housed in a small **PHA (Polyhydroxyalkanoate)** biodegradable shell.
+*   **The Belt (The "Arms"):** The rigid brain uses mechanical snap-fasteners to clip directly into a wide, breathable, elastic maternal support band. The Graphene electrodes are embedded into the fabric of the belt, connecting to the snaps. This achieves the flexibility of an expensive Kapton patch but cuts PCB fabrication costs by 90% (Identical to the Polar H10 design).
 
 ## 5. The Sustainability Edge (Beating COTS DAQs)
 Commercial DAQs (like Shimmer3) rely on toxic plastics and single-use Ag/AgCl wet electrodes that create massive medical waste and skin irritation. We will outperform them by making AURA-MOM PRO a "Next-Generation Green Medical Device."

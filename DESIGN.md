@@ -572,7 +572,7 @@ The brand commits to flat 0px corners. The other tokens exist for product / mobi
 | **MCU** | RAKwireless RAK4631 (Nordic nRF52840) (Industrial Rating) | BLE 5.0, acquisition control, DSP and edge processing via Cortex-M4F. **MUST use digital optoisolators between MCU and AFE.** |
 | **Storage** | External SD Card or QSPI Flash | **MUST NOT write waveforms to internal NVS Flash** (exceeds 100k write limits). Use external SD card via ring buffer for raw waveform capture. |
 | **Power** | EVE 18650 Li-ion + RAK19009 + **Ultra-Low Noise LDO (e.g. TPS7A)** | **STRICTLY Battery-only**. MUST use an Ultra-Low Noise LDO dedicated to the ADS1298 Analog supply (AVdd) to reject switching noise. |
-| **Mechanical** | **Biodegradable PHA (Polyhydroxyalkanoate) Shell** | Enclosure must be flexible, 100% biodegradable PHA (replaces toxic TPU/ABS). Stable sensor pressure without microplastic waste. |
+| **Mechanical** | **Hybrid Rigid-Fabric (Polar H10 Style)** | The MCU/AFE is printed on a cheap Rigid FR4 PCB (The Brain). This brain snaps into a washable maternity belt (The Arms) which houses the Graphene electrodes. Replaces expensive full-FPC fabrication. |
 
 ## Electrode / Sensor Placement Concept
 Use a spatial abdominal array so that multiple channels observe different mixtures of maternal ECG, fetal ECG, uterine electrical activity and noise. EHG literature commonly uses electrodes around/below the navel, while fetal ECG arrays vary with study and gestational age. Therefore the V1 belt should use an adjustable, documented array and collect placement metadata for every recording.

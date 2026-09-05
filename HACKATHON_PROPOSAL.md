@@ -18,6 +18,9 @@ This repository serves as our comprehensive architectural blueprint and proof of
 *   **Dataset Identification & Validation Plan** (`DATASETS_AND_REFERENCES.md`)
 *   **Clinical Boundary Rules** (`AGENTS.md`)
 
+> [!NOTE]
+> **Diagram Generation Reminder:** For the final Hackathon submission, we will use [blueprint.am](https://blueprint.am) to design and render the high-fidelity architectural diagrams of the Hybrid Edge-Cloud pipeline and the Rigid-Fabric mechanical assembly.
+
 ## 4. Video Demonstration Plan (The "Audio-Jack" Bench Test)
 *(To be recorded and linked here)*
 Since we cannot clinically test on a pregnant human during the hackathon, we will demonstrate the hardware acquisition pipeline through a **DAC Audio-Jack Signal Injection Bench Test**. 
