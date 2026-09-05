@@ -1,0 +1,35 @@
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Python cache & compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Large model binaries (>50MB / GitHub hard limit)
+*.pkl
+*.pth
+*.pt
+*.onnx
+models/best_model.pkl
+
+# Generated segment caches (11k+ auto-generated slice files)
+**/ADFECGDB/mixture/
+**/ADFECGDB/fecg_ground/
+**/fetal-ecg-synthetic-database-1.0.0/mixture/
+**/fetal-ecg-synthetic-database-1.0.0/fecg_ground/
+**/fetal-ecg-synthetic-database-1.0.0/mecg_ground/
+
+# IDE & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Temporary logs & scratch
+*.log
+scratch/

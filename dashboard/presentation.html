@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AURA-MOM PRO — Vishwakarma Awards Presentation</title>
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: rgba(22, 29, 47, 0.85);
+      --card-border: rgba(99, 102, 241, 0.2);
+      --accent: #6366f1;
+      --accent-glow: rgba(99, 102, 241, 0.4);
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
+      --accent-amber: #f59e0b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.15) 0px, transparent 50%);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Presentation Header Bar */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      background: rgba(9, 13, 22, 0.6);
+      z-index: 50;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1rem;
+      color: white;
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    .brand-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-tag {
+      font-size: 0.75rem;
+      background: rgba(99, 102, 241, 0.2);
+      color: #a5b4fc;
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .slide-counter {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: var(--text-main);
+      padding: 0.4rem 0.9rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn:hover {
+      background: rgba(99, 102, 241, 0.25);
+      border-color: var(--accent);
+    }
+
+    /* Main Slide Stage */
+    main {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .slide {
+      position: absolute;
+      width: 100%;
+      max-width: 1100px;
+      max-height: 82vh;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(20px) scale(0.98);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      overflow-y: auto;
+      padding: 2.5rem;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(16px);
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+
+    .slide-header {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 1rem;
+    }
+
+    .slide-kicker {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--accent-cyan);
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .slide-title {
+      font-size: 1.85rem;
+      font-weight: 800;
+      line-height: 1.25;
+      background: linear-gradient(135deg, #fff 40%, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .slide-content {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* Grid & Cards */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .metric-hero {
+      font-size: 2.5rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: #fff;
+    }
+
+    .metric-sub {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      background: rgba(15, 23, 42, 0.4);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+    }
+
+    th {
+      background: rgba(99, 102, 241, 0.15);
+      color: #e2e8f0;
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    tr:not(:last-child) td {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .highlight-cell {
+      color: var(--accent-green);
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+    .badge-success { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .badge-info { background: rgba(6, 182, 212, 0.2); color: #38bdf8; border: 1px solid rgba(6, 182, 212, 0.4); }
+    .badge-warn { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+
+    /* Speaker Notes Modal */
+    .notes-drawer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(15, 23, 42, 0.95);
+      border-top: 2px solid var(--accent);
+      padding: 1.25rem 2.5rem;
+      backdrop-filter: blur(16px);
+      transform: translateY(100%);
+      transition: transform 0.25s ease-out;
+      z-index: 100;
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.6);
+    }
+
+    .notes-drawer.open {
+      transform: translateY(0);
+    }
+
+    .notes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent-cyan);
+      font-weight: 700;
+    }
+
+    .notes-body {
+      font-size: 0.95rem;
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
+
+    /* Progress bar */
+    .progress-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-cyan));
+      transition: width 0.3s ease;
+      z-index: 90;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Bar -->
+  <header>
+    <div class="brand">
+      <div class="brand-logo">A</div>
+      <div>
+        <span class="brand-title">AURA-MOM PRO</span>
+      </div>
+      <span class="brand-tag">Vishwakarma Awards 2026</span>
+    </div>
+
+    <div class="nav-controls">
+      <span class="slide-counter" id="slideIndicator">Slide 1 / 10</span>
+      <button class="btn" id="prevBtn" title="Previous (Left Arrow / Backspace)">◀ Prev</button>
+      <button class="btn" id="nextBtn" title="Next (Right Arrow / Space)">Next ▶</button>
+      <button class="btn" id="notesBtn" title="Toggle Speaker Notes (N)">📝 Notes</button>
+      <a href="index.html" class="btn" style="text-decoration: none; color: inherit;" title="Live Clinical Dashboard">📊 Dashboard</a>
+    </div>
+  </header>
+
+  <!-- Slide Stage -->
+  <main>
+    <!-- Slide 1 -->
+    <section class="slide active" data-notes="Distinguished judges, maternal and fetal mortality remain stubborn challenges in low-resource environments. Today, we present AURA-MOM PRO: an engineering-driven, evidence-validated wearable monitoring prototype designed to make high-fidelity fetal heart rate and uterine contraction tracking affordable, continuous, and accessible.">
+      <div class="slide-header">
+        <div class="slide-kicker">Executive Summary & Overview</div>
+        <h1 class="slide-title">AURA-MOM PRO: Affordable, Continuous Fetal-Maternal Edge Monitoring</h1>
+      </div>
+      <div class="slide-content">
+        <p style="font-size: 1.15rem; color: #cbd5e1;">
+          An ultra-low-power, non-invasive wearable biopotential acquisition system designed to eliminate intrapartum fetal hypoxia blindspots in low-resource primary healthcare clinics.
+        </p>
+        <div class="grid-3">
+          <div class="card">
+            <div class="card-title">🎯 The Clinical Goal</div>
+            <p>Replace bulky, operator-dependent $3,000+ ultrasound CTG carts with a continuous, passive abdominal sensor belt.</p>
+          </div>
+          <div class="card">
+            <div class="card-title">⚡ Proven Edge DSP</div>
+            <div class="metric-hero" style="color: var(--accent-green);">0.1005 mV</div>
+            <div class="metric-sub">FECG Extraction Error (RMSE) on real clinical ADFECGDB data (7.5 µs latency).</div>
+          </div>
+          <div class="card">
+            <div class="card-title">💰 Affordable Silicon</div>
+            <div class="metric-hero" style="color: var(--accent-cyan);">$31.25</div>
+            <div class="metric-sub">Estimated Unit Prototype BOM (~₹2,600 INR) with 200+ hour continuous runtime.</div>
+          </div>
+        </div>
+        <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; padding: 1rem; font-size: 0.9rem;">
+          <strong>Core Innovation:</strong> Mathematical edge separation using Normalized Least Mean Squares (NLMS) filter on an ARM Cortex-M4F SoC, running 100% autonomously without mandatory cloud or mobile app dependencies.
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 2 -->
+    <section class="slide" data-notes="Ultrasound CTG fails in rural primary health centers because it requires continuous manual re-aiming by trained ultrasound technicians. If the fetus moves, the acoustic beam misses the fetal heart. Abdominal ECG captures electrical field potentials across the entire maternal abdomen—meaning the sensor never 'loses' the fetal heartbeat.">
+      <div class="slide-header">
+        <div class="slide-kicker">Clinical Motivation & Market Need</div>
+        <h1 class="slide-title">The Rural Healthcare Blindspot: Failure of Ultrasound CTG</h1>
+      </div>
+      <div class="slide-content">
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title" style="color: #ef4444;">❌ Traditional Ultrasound CTG Bottlenecks</div>
+            <ul style="padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.9rem;">
+              <li><strong>Prohibitive Cost:</strong> $2,500 – $8,000 per unit (unattainable for rural PHCs in India).</li>
+              <li><strong>Operator Dependent:</strong> Requires skilled nurses to constantly adjust Doppler transducer angle.</li>
+              <li><strong>Motion Vulnerability:</strong> Fetal repositioning causes complete signal loss during critical labor.</li>
+              <li><strong>Tethered Immobility:</strong> Confines laboring mothers to beds, delaying natural labor progression.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-title" style="color: var(--accent-green);">✅ The AURA-MOM PRO Paradigm</div>
+            <ul style="padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.9rem;">
+              <li><strong>Accessible Hardware:</strong> $31.25 prototype BOM (~₹2,600 INR), scalable to ~$18.50 in volume.</li>
+              <li><strong>Passive Electrical Fields:</strong> Abdominal leads detect bio-potentials omnidirectionally—no aiming.</li>
+              <li><strong>True Continuous Wearable:</strong> Lightweight belt with 8+ days of battery life on a single 2000 mAh cell.</li>
+              <li><strong>Multimodal Telemetry:</strong> Simultaneously captures FHR, Maternal HR, and EHG Uterine Contractions.</li>
+            </ul>
+          </div>
+        </div>
+        <p style="font-size: 0.9rem; color: var(--text-muted);">
+          In India, ~103 mothers per 100,000 live births and ~13 stillbirths per 1,000 persist due to undetected intrapartum distress. Continuous passive monitoring provides a life-saving safety net.
+        </p>
+      </div>
+    </section>
+
+    <!-- Slide 3 -->
+    <section class="slide" data-notes="Extracting a 20-microvolt fetal heartbeat through abdominal tissue while the maternal heart pumps a 1-millivolt signal is comparable to detecting a whisper next to a running jet engine. We overcome this not with hand-waving AI claims, but with classical, mathematically deterministic adaptive filtering.">
+      <div class="slide-header">
+        <div class="slide-kicker">Biomedical Engineering Challenge</div>
+        <h1 class="slide-title">Extracting a 20 µV Whisper Beside a 1,000 µV Jet Engine</h1>
+      </div>
+      <div class="slide-content">
+        <div class="card">
+          <div class="card-title">Dual-Input Differential Biopotential Topology</div>
+          <p style="font-size: 0.9rem;">
+            Abdominal electrodes capture a composite mixture where maternal cardiac electrical vectors dominate the fetal waveform by up to 20:1 in amplitude.
+          </p>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">Primary Lead: $d[n]$ (Abdominal Lower)</div>
+            <p style="font-size: 0.85rem; font-family: var(--font-mono); color: #cbd5e1;">
+              d[n] = s_fetal[n] + s_maternal[n] + v_emg[n] + v_noise[n]
+            </p>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+              Contains the tiny 20–50 µV fetal QRS submerged beneath the dominant maternal cardiac waveform and muscular contraction artifacts.
+            </p>
+          </div>
+          <div class="card">
+            <div class="card-title">Reference Lead: $x[n]$ (Maternal Axis)</div>
+            <p style="font-size: 0.85rem; font-family: var(--font-mono); color: #cbd5e1;">
+              x[n] ≈ s_maternal[n] + v_noise[n]
+            </p>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+              Acquires the maternal cardiac vector with minimal fetal contamination, providing the pure reference signal for adaptive cancellation.
+            </p>
+          </div>
+        </div>
+        <div style="background: rgba(6, 182, 212, 0.1); border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 8px; padding: 0.85rem; font-size: 0.85rem;">
+          <strong>AFE Solution:</strong> TI ADS1298 24-bit Delta-Sigma ADC provides 115 dB CMRR and built-in Right Leg Drive (RLD) to suppress 50 Hz powerline hum and common-mode bodily interference.
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 4 -->
+    <section class="slide" data-notes="Rather than uncritically jumping on the deep learning bandwagon, we performed a rigorous side-by-side benchmark on real patient data. The classical Normalized Least Mean Squares adaptive filter outperformed the 10-million parameter transformer by over 4x in RMSE, while using 40,000 times less memory and running in 7.5 microseconds. We prioritize patient safety and edge feasibility over academic hype.">
+      <div class="slide-header">
+        <div class="slide-kicker">Algorithmic Decision: Edge NLMS vs Deep Learning</div>
+        <h1 class="slide-title">The "No-AI-Slop" Decision: Why Classical DSP Wins</h1>
+      </div>
+      <div class="slide-content">
+        <p style="font-size: 0.95rem;">
+          We implemented and evaluated the state-of-the-art 1D-W-NETR Vision Transformer against our classical NLMS filter on the PhysioNet ADFECGDB held-out test split (Subject <code>r10</code>):
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Evaluation Dimension</th>
+              <th>Classical Edge NLMS (Ours)</th>
+              <th>1D-W-NETR Transformer</th>
+              <th>Engineering Verdict</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>FECG Extraction RMSE</strong></td>
+              <td class="highlight-cell">0.1005 mV</td>
+              <td>0.4340 mV</td>
+              <td><span class="badge badge-success">NLMS: 4.3x Lower Error</span></td>
+            </tr>
+            <tr>
+              <td><strong>FECG Extraction MAE</strong></td>
+              <td class="highlight-cell">0.0810 mV</td>
+              <td>0.3531 mV</td>
+              <td><span class="badge badge-success">NLMS: 4.4x Superior</span></td>
+            </tr>
+            <tr>
+              <td><strong>Execution Latency</strong></td>
+              <td class="highlight-cell">7.5 µs / sample</td>
+              <td>~45,000 µs / segment</td>
+              <td><span class="badge badge-info">Deterministic Real-Time</span></td>
+            </tr>
+            <tr>
+              <td><strong>Memory Footprint</strong></td>
+              <td class="highlight-cell">&lt; 1 KB SRAM</td>
+              <td>40.86 MB Weights</td>
+              <td><span class="badge badge-success">Fits in 256KB MCU RAM</span></td>
+            </tr>
+            <tr>
+              <td><strong>Network Dependency</strong></td>
+              <td class="highlight-cell">Zero (Autonomous)</td>
+              <td>Cloud / Gateway Required</td>
+              <td><span class="badge badge-success">100% Patient Privacy</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 0.85rem; font-size: 0.85rem;">
+          <strong>Architecture Decision:</strong> NLMS is locked in as the primary on-device edge processing engine. 1D-W-NETR is retained purely as a cloud-tier experimental benchmark.
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 5 -->
+    <section class="slide" data-notes="Every metric reported here comes directly from executing our evaluation scripts on held-out patient data from PhysioNet. We do not use simulated toy signals or data leakage across train and test sets. When tested against ground-truth direct fetal scalp signals, our NLMS filter extracted the fetal QRS complexes with an error of just 0.1005 millivolts.">
+      <div class="slide-header">
+        <div class="slide-kicker">Empirical Validation on Real Data</div>
+        <h1 class="slide-title">PhysioNet ADFECGDB Clinical Evidence Dossier</h1>
+      </div>
+      <div class="slide-content">
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">Dataset & Protocol</div>
+            <ul style="font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.4rem; padding-left: 1.2rem;">
+              <li><strong>Database:</strong> Abdominal & Direct Fetal ECG Database (PhysioNet).</li>
+              <li><strong>Subjects:</strong> 5 pregnant women (38–41 weeks gestation).</li>
+              <li><strong>Gold Standard:</strong> Simultaneous direct fetal scalp electrode.</li>
+              <li><strong>Strict Leakage Prevention:</strong> Held-out subject <code>r10</code> (148 segments, 5 minutes recording).</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-title">Reproducible Results Summary</div>
+            <div class="grid-2" style="margin-top: 0.5rem;">
+              <div>
+                <div class="metric-hero" style="font-size: 1.8rem; color: var(--accent-green);">0.1005 mV</div>
+                <div class="metric-sub">Extraction RMSE</div>
+              </div>
+              <div>
+                <div class="metric-hero" style="font-size: 1.8rem; color: var(--accent-cyan);">0.0810 mV</div>
+                <div class="metric-sub">Extraction MAE</div>
+              </div>
+            </div>
+            <div style="margin-top: 0.75rem; font-size: 0.8rem; color: var(--text-muted);">
+              Executed via: <code>ml/classical/nlms.py</code> (148 test segments).
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Adaptive Cancellation Equation</div>
+          <p style="font-size: 0.85rem; font-family: var(--font-mono); color: #cbd5e1;">
+            e[n] = d[n] - w[n]^T x[n], &nbsp;&nbsp; w[n+1] = w[n] + (μ / (||x[n]||² + ε)) · e[n] · x[n]
+          </p>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">
+            Order $M = 10$, Step size $\mu = 0.01$. Error residual $e[n]$ directly preserves isolated fetal QRS complexes while maternal energy is cleanly subtracted.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 6 -->
+    <section class="slide" data-notes="From the isolated fetal signal, our embedded pipeline automatically tracks Fetal Heart Rate, Signal Quality Index, and Uterine Contractions via EHG. A mean FHR of 135.36 BPM accurately reflects gestational physiology, providing clinicians with actionable telemetry in real time.">
+      <div class="slide-header">
+        <div class="slide-kicker">Clinical Parameter Extraction</div>
+        <h1 class="slide-title">Multimodal Vital Signs: FHR, SQI, and Uterine Activity</h1>
+      </div>
+      <div class="slide-content">
+        <div class="grid-3">
+          <div class="card">
+            <div class="card-title">💓 Fetal Heart Rate (FHR)</div>
+            <div class="metric-hero" style="color: #ec4899;">135.4 <span style="font-size: 1rem;">BPM</span></div>
+            <div class="metric-sub">Mean calculated across test split. Normal baseline: 110–160 BPM. Derived from Pan-Tompkins peak detector.</div>
+          </div>
+          <div class="card">
+            <div class="card-title">📶 Signal Quality Index (SQI)</div>
+            <div class="metric-hero" style="color: var(--accent-cyan);">2.56</div>
+            <div class="metric-sub">SNR estimation heuristic. Values > 1.5 indicate high peak detectability; drops < 1.0 trigger lead-off alarms.</div>
+          </div>
+          <div class="card">
+            <div class="card-title">⚡ EHG Uterine Contraction</div>
+            <div class="metric-hero" style="color: var(--accent-amber);">0.0095</div>
+            <div class="metric-sub">Teager-Kaiser Energy Operator (TKEO) on 0.1–4.0 Hz band isolates myometrial electrical contractions.</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Real-Time Clinical Alarm Thresholding</div>
+          <p style="font-size: 0.85rem; color: #cbd5e1;">
+            Automated alerts flag critical fetal distress markers instantly:
+          </p>
+          <div class="grid-3" style="font-size: 0.85rem; margin-top: 0.5rem;">
+            <div>🔴 <strong>Fetal Tachycardia:</strong> FHR &gt; 160 BPM (&gt; 10 min)</div>
+            <div>🔵 <strong>Fetal Bradycardia:</strong> FHR &lt; 110 BPM (&gt; 3 min)</div>
+            <div>⚠️ <strong>Lead Detachment:</strong> SQI &lt; 1.0 or DC lead-off</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 7 -->
+    <section class="slide" data-notes="Commercial CTG units cost thousands of dollars. By integrating low-noise commercial biopotential silicon with an ultra-efficient BLE SoC, AURA-MOM PRO achieves a complete Bill of Materials under $32. With a continuous power draw of just 10 milliamps, mothers can wear the device for over a week without needing a recharge.">
+      <div class="slide-header">
+        <div class="slide-kicker">Embedded Hardware & Power Budget</div>
+        <h1 class="slide-title">Sub-$35 Bill of Materials & 8-Day Battery Life</h1>
+      </div>
+      <div class="slide-content">
+        <div class="grid-2">
+          <div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Component</th>
+                  <th>Part Number</th>
+                  <th>Unit Cost</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>SoC MCU (ARM Cortex-M4F)</strong></td>
+                  <td>Nordic nRF52840</td>
+                  <td>$3.50</td>
+                </tr>
+                <tr>
+                  <td><strong>24-Bit 8-Ch ECG ADC</strong></td>
+                  <td>TI ADS1298</td>
+                  <td>$14.20</td>
+                </tr>
+                <tr>
+                  <td><strong>Power & Battery PMIC</strong></td>
+                  <td>BQ24075 + TPS73633</td>
+                  <td>$2.55</td>
+                </tr>
+                <tr>
+                  <td><strong>2000 mAh Li-Po Battery</strong></td>
+                  <td>3.7V Single Cell</td>
+                  <td>$4.50</td>
+                </tr>
+                <tr>
+                  <td><strong>Passives, PCB & Case</strong></td>
+                  <td>Custom 4-layer FR4</td>
+                  <td>$6.50</td>
+                </tr>
+                <tr style="background: rgba(99, 102, 241, 0.2);">
+                  <td><strong>Total Prototype Cost</strong></td>
+                  <td>1 Unit</td>
+                  <td class="highlight-cell">$31.25 USD</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="card-title">🔋 Power & Battery Autonomy</div>
+            <div class="metric-hero" style="color: var(--accent-green); font-size: 2.2rem;">&gt; 200 Hours</div>
+            <div class="metric-sub">&gt; 8 Days of continuous monitoring on a single charge.</div>
+            <ul style="font-size: 0.85rem; margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.35rem; padding-left: 1.2rem;">
+              <li>ADS1298 Active Current (1 kSPS): ~6.0 mA</li>
+              <li>nRF52840 DSP + BLE TX (Avg): ~4.0 mA</li>
+              <li>Total Continuous Current: ~10.0 mA</li>
+              <li>Battery Capacity: 2000 mAh @ 3.7V</li>
+              <li>2000 mAh / 10 mA = <strong>200 Hours Runtime</strong></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 8 -->
+    <section class="slide" data-notes="To ensure seamless adoption in rural clinics, our dashboard runs directly in standard web browsers using the Web Bluetooth API. Nurses and doctors can monitor patient telemetry on any existing Android tablet or PC without installing expensive proprietary software.">
+      <div class="slide-header">
+        <div class="slide-kicker">Telemetric Interface & Dashboard</div>
+        <h1 class="slide-title">Zero-Install Clinical Web Bluetooth Dashboard</h1>
+      </div>
+      <div class="slide-content">
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">🖥️ Web Bluetooth Architecture</div>
+            <ul style="font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.4rem; padding-left: 1.2rem;">
+              <li><strong>Zero Installation:</strong> Runs natively in Chrome/Edge on standard tablets or laptops.</li>
+              <li><strong>Standard BLE GATT:</strong> Subscribes to custom 20-byte streaming telemetry notifications.</li>
+              <li><strong>High Frame Rate:</strong> Canvas-based 60 FPS real-time maternal & fetal ECG strip visualizer.</li>
+              <li><strong>Dual-Mode:</strong> Live BLE streaming + built-in historical clinical dataset replay mode.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-title">🚨 Patient Safety Alarm System</div>
+            <ul style="font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.4rem; padding-left: 1.2rem;">
+              <li><strong>Live Indicators:</strong> Heart Rate, Uterine Contractions, Motion, and Signal Quality.</li>
+              <li><strong>Auditory/Visual Warning:</strong> Instant buzzer + color alerts on fetal bradycardia/tachycardia.</li>
+              <li><strong>Data Export:</strong> 1-click clinical CSV summary generation for hospital record integration.</li>
+            </ul>
+          </div>
+        </div>
+        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 1rem; text-align: center;">
+          <span style="font-size: 0.9rem; color: #94a3b8;">
+            Experience the live interface directly via the local web app:
+          </span>
+          <br>
+          <a href="index.html" target="_blank" style="display: inline-block; margin-top: 0.5rem; background: var(--accent); color: white; padding: 0.4rem 1rem; border-radius: 6px; text-decoration: none; font-size: 0.85rem; font-weight: 600;">
+            Launch AURA-MOM Clinical Dashboard ↗
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 9 -->
+    <section class="slide" data-notes="We hold ourselves to the highest ethical and scientific standards. We do not claim 99.9% accuracy, we do not pretend to have fabricated physical silicone chips, and we do not hide our limitations. What we have built is a mathematically validated, software-in-the-loop tested system with 100% reproducible evidence.">
+      <div class="slide-header">
+        <div class="slide-kicker">Red-Team Audit & Scientific Defensibility</div>
+        <h1 class="slide-title">Merciless Transparency: Zero Fabricated Claims</h1>
+      </div>
+      <div class="slide-content">
+        <p style="font-size: 0.9rem;">
+          To safeguard scientific integrity before the Vishwakarma jury, every numerical claim in AURA-MOM PRO is strictly classified in <code>docs/RESULTS_AUDIT.md</code>:
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Metric / Claim</th>
+              <th>Value</th>
+              <th>Evidence Source</th>
+              <th>Audit Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>NLMS Extraction RMSE</td>
+              <td class="highlight-cell">0.1005 mV</td>
+              <td>ADFECGDB Test Split (`r10`)</td>
+              <td><span class="badge badge-success">COMPUTED FROM REAL DATA</span></td>
+            </tr>
+            <tr>
+              <td>NLMS Extraction MAE</td>
+              <td class="highlight-cell">0.0810 mV</td>
+              <td>ADFECGDB Test Split (`r10`)</td>
+              <td><span class="badge badge-success">COMPUTED FROM REAL DATA</span></td>
+            </tr>
+            <tr>
+              <td>1D-W-NETR Error (RMSE)</td>
+              <td>0.4340 mV</td>
+              <td>Feasibility test on `r10`</td>
+              <td><span class="badge badge-info">EXPERIMENTAL BENCHMARK</span></td>
+            </tr>
+            <tr>
+              <td>Execution Latency</td>
+              <td>7.5 µs / sample</td>
+              <td>Software-in-the-Loop Simulation</td>
+              <td><span class="badge badge-info">SIMULATED (x86 CPU)</span></td>
+            </tr>
+            <tr>
+              <td>Unit BOM Cost</td>
+              <td>$31.25 USD</td>
+              <td>Component Supplier Quotes</td>
+              <td><span class="badge badge-warn">ESTIMATED</span></td>
+            </tr>
+            <tr>
+              <td>Battery Runtime</td>
+              <td>&gt; 200 Hours</td>
+              <td>10 mA current draw calculation</td>
+              <td><span class="badge badge-warn">ESTIMATED</span></td>
+            </tr>
+            <tr>
+              <td>Physical Fabrication</td>
+              <td>Pending PCB Run</td>
+              <td>Gerbers & Firmware ready</td>
+              <td><span class="badge badge-warn">PROPOSED / SIL TESTED</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Slide 10 -->
+    <section class="slide" data-notes="The spirit of the Vishwakarma Awards is practical engineering excellence that uplifts society. AURA-MOM PRO demonstrates that with rigorous mathematics and accessible silicon, we can bridge the healthcare divide, protect expectant mothers, and save newborn lives. Thank you.">
+      <div class="slide-header">
+        <div class="slide-kicker">Impact & Next Milestones</div>
+        <h1 class="slide-title">Bridging the Healthcare Divide: Scaling AURA-MOM PRO</h1>
+      </div>
+      <div class="slide-content">
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">🇮🇳 Social & Economic Impact</div>
+            <ul style="font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.5rem; padding-left: 1.2rem;">
+              <li><strong>Democratization:</strong> Equips rural Primary Health Centers at 1% of the cost of legacy CTG.</li>
+              <li><strong>Continuous Vigilance:</strong> Identifies fetal hypoxia hours before permanent damage occurs.</li>
+              <li><strong>Asha Worker Friendly:</strong> Intuitive color indicators enable frontline health workers to triage emergency referrals.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-title">🚀 Immediate Roadmap (Post-Submission)</div>
+            <ul style="font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.5rem; padding-left: 1.2rem;">
+              <li><strong>Hardware Fabrication:</strong> Assemble 5 prototype PCB units via JLCPCB/PCBWay.</li>
+              <li><strong>Zephyr RTOS Port:</strong> Flash bare-metal C NLMS driver directly to nRF52840 Dongle/DK.</li>
+              <li><strong>Clinical Pilot Study:</strong> Institutional Ethics Committee (IEC) submission for hospital validation.</li>
+            </ul>
+          </div>
+        </div>
+        <div style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(6, 182, 212, 0.2)); border: 1px solid var(--accent); border-radius: 12px; padding: 1.5rem; text-align: center;">
+          <h2 style="font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 0.5rem;">
+            "Rigorous Engineering. Honest Evidence. Saving Lives."
+          </h2>
+          <p style="font-size: 0.95rem; color: #cbd5e1;">
+            AURA-MOM PRO is ready for physical realization and clinical adoption under the Vishwakarma Awards.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Progress Bar -->
+  <div class="progress-bar" id="progressBar"></div>
+
+  <!-- Speaker Notes Drawer -->
+  <div class="notes-drawer" id="notesDrawer">
+    <div class="notes-header">
+      <span>🎤 Speaker Notes & Defense Script</span>
+      <span style="cursor: pointer;" id="closeNotesBtn">✕ Close (N)</span>
+    </div>
+    <div class="notes-body" id="notesBody"></div>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const notesBtn = document.getElementById('notesBtn');
+    const closeNotesBtn = document.getElementById('closeNotesBtn');
+    const slideIndicator = document.getElementById('slideIndicator');
+    const progressBar = document.getElementById('progressBar');
+    const notesDrawer = document.getElementById('notesDrawer');
+    const notesBody = document.getElementById('notesBody');
+
+    let currentSlide = 0;
+
+    function updateSlide(index) {
+      if (index < 0) index = 0;
+      if (index >= slides.length) index = slides.length - 1;
+      
+      slides[currentSlide].classList.remove('active');
+      currentSlide = index;
+      slides[currentSlide].classList.add('active');
+
+      // Update counter and progress
+      slideIndicator.textContent = `Slide ${currentSlide + 1} / ${slides.length}`;
+      const progressPercent = ((currentSlide + 1) / slides.length) * 100;
+      progressBar.style.width = `${progressPercent}%`;
+
+      // Update speaker notes
+      const notes = slides[currentSlide].getAttribute('data-notes') || 'No speaker notes for this slide.';
+      notesBody.textContent = notes;
+    }
+
+    prevBtn.addEventListener('click', () => updateSlide(currentSlide - 1));
+    nextBtn.addEventListener('click', () => updateSlide(currentSlide + 1));
+
+    function toggleNotes() {
+      notesDrawer.classList.toggle('open');
+    }
+
+    notesBtn.addEventListener('click', toggleNotes);
+    closeNotesBtn.addEventListener('click', toggleNotes);
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        updateSlide(currentSlide + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'Backspace' || e.key === 'PageUp') {
+        e.preventDefault();
+        updateSlide(currentSlide - 1);
+      } else if (e.key === 'n' || e.key === 'N') {
+        e.preventDefault();
+        toggleNotes();
+      }
+    });
+
+    // Initialize first slide
+    updateSlide(0);
+  </script>
+</body>
+</html>

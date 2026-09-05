@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA-MOM PRO | Clinical Monitor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050608;
+            --panel-bg: #101216;
+            --primary-accent: #00ffea;  /* High contrast cyan for Fetal */
+            --secondary-accent: #ffffff; /* White for Maternal */
+            --tertiary-accent: #ffcc00;  /* Yellow for alerts/EHG */
+            --text-main: #9ca3af;
+            --text-highlight: #ffffff;
+            --danger: #ff3333;
+            --border-color: #2a2d35;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: #000;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .logo-container {
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+        }
+        .logo-container h1 {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            color: var(--primary-accent);
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
+        .badge {
+            background: var(--tertiary-accent);
+            color: #000;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+        .status-container {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-highlight);
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--primary-accent);
+        }
+        .dot.dataset { background-color: var(--tertiary-accent); }
+        .dot.live { background-color: #00ff00; }
+        .dot.demo { background-color: var(--text-main); }
+        
+        .mode-select {
+            background: #1a1d24;
+            color: white;
+            border: 1px solid var(--border-color);
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        /* Main Layout */
+        .app-container {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 65px);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 80px;
+            background: #0a0b0e;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 2rem;
+            gap: 2rem;
+        }
+        .nav-item {
+            color: var(--text-main);
+            font-size: 0.75rem;
+            text-align: center;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .nav-item.active {
+            color: var(--primary-accent);
+        }
+        .nav-icon {
+            display: block;
+            width: 32px;
+            height: 32px;
+            background: #1f2229;
+            border-radius: 8px;
+            margin: 0 auto 0.5rem;
+            border: 1px solid transparent;
+        }
+        .nav-item.active .nav-icon {
+            border-color: var(--primary-accent);
+            background: rgba(0, 255, 234, 0.1);
+        }
+
+        /* Workspace */
+        .workspace {
+            display: flex;
+            flex: 1;
+            padding: 1rem;
+            gap: 1rem;
+        }
+
+        /* Waveforms Column (Center) */
+        .waveforms-col {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .chart-box {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .chart-header {
+            padding: 0.5rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .chart-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-highlight);
+            text-transform: uppercase;
+        }
+        .chart-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-main);
+        }
+        .canvas-wrapper {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background: #000;
+        }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .qrs-marker {
+            position: absolute;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            background: rgba(255, 204, 0, 0.3);
+            border-left: 1px dashed var(--tertiary-accent);
+        }
+
+        /* Vitals Column (Right) */
+        .vitals-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .vital-box {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .vital-box.fetal {
+            border-left: 4px solid var(--primary-accent);
+        }
+        .vital-box.maternal {
+            border-left: 4px solid var(--secondary-accent);
+        }
+        .vital-box.quality {
+            border-left: 4px solid var(--tertiary-accent);
+            flex-direction: row;
+            align-items: center;
+        }
+        .vital-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-main);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .vital-value-container {
+            display: flex;
+            align-items: baseline;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+        .vital-value {
+            font-family: 'Outfit', sans-serif;
+            font-size: 4rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+        .fetal .vital-value { color: var(--primary-accent); }
+        .maternal .vital-value { color: var(--secondary-accent); }
+        .quality .vital-value { font-size: 2.5rem; color: var(--tertiary-accent); margin-top: 0; }
+        
+        .vital-unit {
+            font-size: 1.2rem;
+            margin-left: 0.5rem;
+            color: var(--text-main);
+        }
+        
+        /* Log Panel */
+        .log-panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .log-header {
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-highlight);
+        }
+        .log-content {
+            padding: 0.5rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .log-entry {
+            font-family: monospace;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            gap: 1rem;
+        }
+        .log-time { color: var(--text-main); }
+        .log-msg { color: var(--text-highlight); }
+        .log-msg.urgent { color: var(--danger); font-weight: bold; }
+        .log-msg.review { color: var(--tertiary-accent); }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <h1>AURA-MOM PRO</h1>
+            <span class="badge" id="modeBadge">DATASET REPLAY</span>
+        </div>
+        <div class="status-container">
+            <a href="presentation.html" style="background: #1f2229; color: var(--primary-accent); border: 1px solid var(--border-color); padding: 0.45rem 0.8rem; border-radius: 4px; text-decoration: none; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 0.4rem;" title="View Vishwakarma Awards Presentation">📽️ Presentation Deck</a>
+            <select class="mode-select" id="modeSelect">
+                <option value="replay">Real Dataset Replay (ADFECGDB)</option>
+                <option value="demo">Synthetic Demo</option>
+                <option value="live" disabled>Live Hardware (Not Connected)</option>
+            </select>
+            <div class="status-indicator">
+                <div class="dot dataset" id="statusDot"></div>
+                <span id="statusText">System Ready</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="nav-item active">
+                <div class="nav-icon"></div>
+                Overview
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon"></div>
+                Signals
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon"></div>
+                Results
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon"></div>
+                Device
+            </div>
+        </div>
+
+        <!-- Workspace -->
+        <div class="workspace">
+            
+            <!-- Center: Waveforms -->
+            <div class="waveforms-col">
+                <div class="chart-box">
+                    <div class="chart-header">
+                        <span class="chart-title" style="color: var(--text-main);">1. Raw Abdominal (Input)</span>
+                        <span class="chart-subtitle">1mV/div | Maternal + Fetal + Noise</span>
+                    </div>
+                    <div class="canvas-wrapper">
+                        <canvas id="rawCanvas"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-box">
+                    <div class="chart-header">
+                        <span class="chart-title" style="color: var(--secondary-accent);">2. Maternal Reference (Thoracic)</span>
+                        <span class="chart-subtitle">1mV/div | NLMS Reference</span>
+                    </div>
+                    <div class="canvas-wrapper">
+                        <canvas id="maternalCanvas"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-box">
+                    <div class="chart-header">
+                        <span class="chart-title" style="color: var(--primary-accent);">3. Fetal ECG (NLMS Output)</span>
+                        <span class="chart-subtitle">Extracted e(n)</span>
+                    </div>
+                    <div class="canvas-wrapper">
+                        <canvas id="fetalCanvas"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Vitals & Logs -->
+            <div class="vitals-col">
+                <div class="vital-box fetal">
+                    <div class="vital-header">
+                        <span>Fetal Heart Rate</span>
+                        <span>FHR</span>
+                    </div>
+                    <div class="vital-value-container">
+                        <span class="vital-value" id="fhrValue">---</span>
+                        <span class="vital-unit">bpm</span>
+                    </div>
+                </div>
+
+                <div class="vital-box maternal">
+                    <div class="vital-header">
+                        <span>Maternal Heart Rate</span>
+                        <span>MHR</span>
+                    </div>
+                    <div class="vital-value-container">
+                        <span class="vital-value" id="mhrValue">---</span>
+                        <span class="vital-unit">bpm</span>
+                    </div>
+                </div>
+
+                <div class="vital-box quality">
+                    <div class="vital-header" style="flex-direction: column; gap: 0.5rem;">
+                        <span>Signal Quality (SQI)</span>
+                        <span style="font-size: 0.7rem; color: #555;">Based on QRS morphological consistency</span>
+                    </div>
+                    <div class="vital-value-container">
+                        <span class="vital-value" id="sqiValue">--</span>
+                        <span class="vital-unit">%</span>
+                    </div>
+                </div>
+
+                <div class="log-panel">
+                    <div class="log-header">System Event Log</div>
+                    <div class="log-content" id="logContent">
+                        <!-- Logs populated here -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Load the Javascript Adapter -->
+    <script src="js/data_adapter.js"></script>
+    <script>
+        let adapter;
+        const CHUNK_SIZE = 400; // Number of points visible on screen at once
+        
+        // Circular buffers for rendering
+        const buffers = {
+            abdominal: new Array(CHUNK_SIZE).fill(0),
+            maternal: new Array(CHUNK_SIZE).fill(0),
+            fetal: new Array(CHUNK_SIZE).fill(0)
+        };
+        let writePointer = 0;
+        
+        // Canvas setup
+        function initCanvas(id, color) {
+            const canvas = document.getElementById(id);
+            const ctx = canvas.getContext('2d');
+            
+            const resize = () => {
+                canvas.width = canvas.parentElement.clientWidth;
+                canvas.height = canvas.parentElement.clientHeight;
+            };
+            window.addEventListener('resize', resize);
+            resize();
+            
+            return { canvas, ctx, color };
+        }
+        
+        const charts = {
+            abdominal: initCanvas('rawCanvas', '#6b7280'),
+            maternal: initCanvas('maternalCanvas', '#ffffff'),
+            fetal: initCanvas('fetalCanvas', '#00ffea')
+        };
+
+        function addLog(msg, type="normal") {
+            const content = document.getElementById('logContent');
+            const d = new Date();
+            const timeStr = `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}:${d.getSeconds().toString().padStart(2,'0')}.${d.getMilliseconds().toString().padStart(3,'0')}`;
+            const div = document.createElement('div');
+            div.className = 'log-entry';
+            div.innerHTML = `<span class="log-time">[${timeStr}]</span><span class="log-msg ${type}">${msg}</span>`;
+            content.prepend(div);
+        }
+
+        function drawChart(chartObj, dataBuffer, scale = 1, yOffset = 0) {
+            const { canvas, ctx, color } = chartObj;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Grid
+            ctx.strokeStyle = '#1f2229';
+            ctx.lineWidth = 1;
+            for(let i=0; i<canvas.width; i+=40) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke(); }
+            for(let i=0; i<canvas.height; i+=40) { ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke(); }
+
+            ctx.beginPath();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 1.5;
+            ctx.lineJoin = 'round';
+            
+            const dx = canvas.width / CHUNK_SIZE;
+            const midY = canvas.height / 2;
+            
+            // Draw from read pointer to end, then from 0 to read pointer to create moving window effect
+            let x = 0;
+            for(let i=0; i<CHUNK_SIZE; i++) {
+                // To make the waveform scroll left: we read starting from writePointer
+                let idx = (writePointer + i) % CHUNK_SIZE;
+                let y = midY - (dataBuffer[idx] * scale) + yOffset;
+                
+                if(i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+                x += dx;
+            }
+            ctx.stroke();
+        }
+
+        async function initApp() {
+            addLog("Initializing AURA-MOM PRO UI...", "normal");
+            adapter = new DataAdapter('data/demo_replay.json');
+            
+            const success = await adapter.load();
+            if(!success) {
+                addLog("Failed to load data/demo_replay.json. Ensure python exporter was run.", "urgent");
+                return;
+            }
+            
+            document.getElementById('statusText').innerText = `Dataset Loaded: ${adapter.data.metadata.dataset}`;
+            addLog(`Loaded dataset with length: ${adapter.data.metadata.length}`, "normal");
+            
+            // Set static vitals based on dataset average
+            document.getElementById('fhrValue').innerText = adapter.data.vitals.fhr_bpm;
+            document.getElementById('mhrValue').innerText = adapter.data.vitals.mhr_bpm;
+            document.getElementById('sqiValue').innerText = adapter.data.vitals.sqi;
+
+            if (adapter.data.vitals.sqi < 50) {
+                addLog("Low Signal Quality Index detected in dataset.", "review");
+            }
+            
+            adapter.addListener((frame) => {
+                // This is called per sample
+                buffers.abdominal[writePointer] = frame.abdominal;
+                buffers.maternal[writePointer] = frame.maternal_ref;
+                buffers.fetal[writePointer] = frame.fetal_est;
+                
+                writePointer = (writePointer + 1) % CHUNK_SIZE;
+            });
+            
+            // Start render loop
+            function renderLoop() {
+                drawChart(charts.abdominal, buffers.abdominal, 30);
+                drawChart(charts.maternal, buffers.maternal, 30);
+                drawChart(charts.fetal, buffers.fetal, 60); // Fetal is smaller amplitude, scale up visually
+                requestAnimationFrame(renderLoop);
+            }
+            renderLoop();
+            
+            addLog("Streaming started at " + adapter.data.metadata.ui_fs + "Hz", "normal");
+            adapter.start();
+        }
+
+        // Handle Mode switch
+        document.getElementById('modeSelect').addEventListener('change', (e) => {
+            const mode = e.target.value;
+            if(adapter) {
+                adapter.stop();
+                if(mode === 'replay') {
+                    addLog("Switched to Dataset Replay", "normal");
+                    adapter.start();
+                } else if(mode === 'demo') {
+                    addLog("Switched to Synthetic Demo (Not Implemented Here)", "review");
+                }
+            }
+        });
+
+        // Boot
+        window.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
