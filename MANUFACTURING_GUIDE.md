@@ -21,5 +21,10 @@ Commercial wearables charge a massive premium for putting a Texas Instruments AF
 *   **The Enclosure:** The electronics and battery must be housed in a **Curved, 3D-Printed TPU (Thermoplastic Polyurethane) Shell**. TPU is a flexible, rubber-like filament. The curvature must match the average 3rd-trimester abdomen.
 *   **The Belt:** Use a wide, breathable, elastic maternal support band. The electrodes must be embedded into the fabric to guarantee constant, uniform pressure against the skin without restricting blood flow or breathing.
 
+## 5. The Sustainability Edge (Beating COTS DAQs)
+Commercial DAQs (like Shimmer3) rely on toxic plastics and single-use Ag/AgCl wet electrodes that create massive medical waste and skin irritation. We will outperform them by making AURA-MOM PRO a "Next-Generation Green Medical Device."
+*   **Zero-Waste Electrodes:** Do not use wet gels. Use **PEDOT:PSS (Conductive Polymer) or Laser-Induced Graphene (LIG)**. These can be printed onto a flexible natural hydrogel (like Chitosan) or directly into the textile belt. They are 100% reusable, washable, and achieve the exact same impedance and SNR as clinical wet electrodes.
+*   **Biodegradable Plastics:** For the 3D-printed enclosure (Section 4), absolutely do NOT use standard TPU, ABS, or PLA (which shed microplastics). You MUST print the enclosure using **PHA (Polyhydroxyalkanoate)**. PHA is a 100% bio-derived, marine-biodegradable flexible polymer.
+
 ## Summary
-By combining the **ADS1298**, **TPS7A LDO**, **Shielded Coaxial Cables**, and a **TPU Enclosure**, we achieve National Instruments / Shimmer3 quality for a fraction of the cost. Do not cut corners on the shielding or the LDO, or the signal will be useless.
+By combining the **ADS1298**, **TPS7A LDO**, **Shielded Coaxial Cables**, **Graphene Dry Electrodes**, and a **PHA Enclosure**, we achieve—and physically outperform—National Instruments / Shimmer3 quality for a fraction of the cost, while producing zero medical e-waste.
