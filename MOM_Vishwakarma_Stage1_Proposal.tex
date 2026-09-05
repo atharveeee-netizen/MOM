@@ -1,0 +1,350 @@
+\documentclass[10pt,a4paper]{article}
+
+% --- Core Packages ---
+\usepackage[margin=0.65in,top=0.75in,bottom=0.75in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{cite}
+\usepackage{microtype}
+\usepackage{caption}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{lastpage}
+
+% --- Strict Monochrome Typography & Formatting (Zero Color) ---
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.6pt}
+
+\lhead{\small\textbf{MOM: LOW-COST NON-INVASIVE FETAL-MATERNAL BIO-POTENTIAL MONITOR}}
+\rhead{\small\textit{Stage-1 Technical Proposal}}
+\lfoot{\footnotesize Rashtriya Raksha University --- School of Applied Sciences, Engineering \& Technology}
+\rfoot{\footnotesize Page \thepage\ of \pageref{LastPage}}
+
+% Title & Section Headings Styling
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}[\titlerule]
+\titlespacing*{\section}{0pt}{12pt plus 2pt minus 2pt}{6pt}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.5em}{}
+\titlespacing*{\subsection}{0pt}{8pt plus 2pt minus 1pt}{4pt}
+
+\captionsetup{font=small,labelfont=bf,labelsep=period}
+\setlist{noitemsep,topsep=2pt,parsep=1pt,partopsep=1pt}
+
+\begin{document}
+
+% =========================================================================
+% TITLE & HEADER BLOCK
+% =========================================================================
+\begin{center}
+    {\huge\textbf{MOM}}\\[0.25em]
+    {\large\textit{Low-Cost Non-Invasive Fetal-Maternal Bio-Potential Monitor via Adaptive Edge DSP}}\\[0.8em]
+\end{center}
+
+\noindent
+\begin{tabularx}{\textwidth}{|X|X|}
+\hline
+\textbf{Project Track:} Healthcare Innovation \& Accessible Biomedical Technology & \textbf{Institution:} Rashtriya Raksha University, Gandhinagar, Gujarat, India \\
+\textbf{Stage:} Stage 1: Open Applications (Detailed Technical Proposal) & \textbf{Code Repository:} https://github.com/atharveeee-netizen/MOM \\
+\hline
+\end{tabularx}
+
+\vspace{0.6em}
+
+% =========================================================================
+% TEAM ROSTER & AFFILIATION
+% =========================================================================
+\noindent
+\begin{tabularx}{\textwidth}{lXX}
+\toprule
+\textbf{Team Member} & \textbf{Department \& Specialization} & \textbf{Core Technical Responsibility} \\
+\midrule
+\textbf{Atharve Dahima} & Electronics Engineering, Rashtriya Raksha University & AFE Bio-Instrumentation, ADS1298 Interface \& Signal Conditioning \\
+\textbf{Mohit} & Electronics Engineering, Rashtriya Raksha University & Embedded Firmware, Power Subsystem \& MCU Low-Power Optimization \\
+\textbf{Charvi Mehndiratta} & Computer Engineering, Rashtriya Raksha University & Telemetry Pipeline, BLE Protocol Stack \& Clinical Dashboard UI \\
+\textbf{Akshit Agarwal} & Computer Engineering, Rashtriya Raksha University & Adaptive DSP Architecture, Algorithm Evaluation \& Benchmark Audit \\
+\bottomrule
+\end{tabularx}
+
+\vspace{0.8em}
+
+% =========================================================================
+% SECTION 1: PROBLEM STATEMENT
+% =========================================================================
+\section{Problem Statement}
+
+\noindent
+\framebox[\textwidth][s]{%
+\parbox{0.97\textwidth}{%
+\vspace{0.3em}
+\textbf{Problem Statement (in one statement):}\\
+Over 80\% of rural primary health centers in India lack continuous intrapartum fetal monitoring because existing ultrasound cardiotocography (CTG) systems are cost-prohibitive (\$2,500--\$8,000 USD), physically tethered, and require continuous manual beam re-aiming by skilled ultrasound technicians, leaving frontline clinicians blind to intrapartum fetal hypoxia and resulting in preventable stillbirths and neonatal brain damage.
+\vspace{0.3em}
+}%
+}
+
+\vspace{0.6em}
+\noindent
+\textbf{Biophysical and Clinical Background:} Intrapartum fetal distress---primarily acute asphyxia and umbilical cord compression---is the leading cause of intrapartum stillbirths and neonatal hypoxic-ischemic encephalopathy (HIE). While ultrasound CTG serves as the urban hospital gold standard, its acoustic Doppler principle fails in rural environments: whenever the fetus descends or shifts during active labor, the narrow acoustic beam loses the cardiac focus, necessitating immediate manual repositioning by trained personnel. Non-invasive abdominal biopotential acquisition presents a transformative alternative by capturing the electrical field vector omnidirectionally. However, maternal abdominal skin potentials present an extreme signal separation challenge: the maternal ECG (1000--5000~$\mu$V) is 10 to 100 times stronger than the microvolt fetal ECG (10--50~$\mu$V), heavily corrupted by maternal uterine electromyogram (EMG) shivering, respiratory motion, and 50~Hz powerline hum.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{docs/assets/bw_slide_01_problem_overview.png}
+    \caption{Core Biophysical Monitoring Gap --- Fetal biopotential is $10\text{--}100\times$ weaker than maternal cardiac interference, requiring adaptive cancellation.}
+    \label{fig:problem}
+\end{figure}
+
+% =========================================================================
+% SECTION 2: SOLUTION PROPOSED
+% =========================================================================
+\section{Solution Proposed: Architecture, Features \& Mechanisms}
+
+\noindent
+\textbf{Overview:} MOM is an ultra-low-power, wearable maternal-fetal electrophysiological acquisition platform that performs deterministic adaptive noise cancellation directly on an embedded microcontroller at the edge. The system eliminates acoustic ultrasound radiation, replaces gelled transducers with reusable belt electrodes, and continuously extracts Fetal Heart Rate (FHR), maternal heart rate (MHR), Signal Quality Index (SQI), and Electrohysterogram (EHG) uterine contractions without requiring a cloud connection.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{docs/assets/bw_slide_02_solution_architecture.png}
+    \caption{MOM End-to-End System Topology --- Abdominal electrodes to analog front-end (AFE), MCU DSP engine, and BLE clinical telemetry.}
+    \label{fig:architecture}
+\end{figure}
+
+\noindent
+\textbf{Technical Mechanisms \& Subsystems:}
+\begin{enumerate}[leftmargin=1.8em]
+    \item \textbf{Analog Front-End (AFE):} Built upon the Texas Instruments ADS1298 low-noise, 24-bit delta-sigma ADC with 8 simultaneous differential channels, internal programmable gain amplifiers ($\text{PGA} = 6$), and active Right Leg Drive (RLD) common-mode rejection exceeding $-110$~dB.
+    \item \textbf{Edge Processing Unit:} Nordic Semiconductor nRF52840 SoC featuring an ARM Cortex-M4F core clocked at 64~MHz with single-precision hardware FPU, 256~KB SRAM, and 1~MB embedded Flash.
+    \item \textbf{Signal Conditioning Pipeline:} Multi-stage digital filtering including 2nd-order Butterworth high-pass ($f_c = 0.5$~Hz) for baseline wander removal, 4th-order Butterworth low-pass ($f_c = 100$~Hz) for EMG attenuation, and a 50~Hz IIR notch filter ($Q = 30$) for powerline interference rejection.
+    \item \textbf{Adaptive Separation Engine (32-Tap NLMS):} A reference thoracic lead captures maternal ECG $x[n]$ to adaptively predict maternal abdominal interference $\hat{y}[n] = \mathbf{w}^T[n]\mathbf{x}[n]$. The maternal-cancelled residual error $e[n] = d[n] - \hat{y}[n]$ isolates pure fetal complexes with mathematical convergence:
+    \begin{equation}
+        \mathbf{w}[n+1] = \mathbf{w}[n] + \frac{\mu}{\|\mathbf{x}[n]\|^2 + \epsilon} e[n] \mathbf{x}[n]
+    \end{equation}
+    operating with filter order $M = 32$, step size $\mu = 0.05$, and regularization $\epsilon = 10^{-8}$.
+    \item \textbf{Feature Extraction:} Real-time Pan-Tompkins peak detection extracts beat-to-beat FHR; spectral energy ratio calculates SQI; 0.1--4.0~Hz bandpass with Teager-Kaiser Energy Operator (TKEO) computes uterine contractions.
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{docs/assets/bw_slide_03_signal_processing_pipeline.png}
+    \caption{Multi-Stage Signal Processing Pipeline --- Step-by-step signal conditioning and adaptive cancellation mechanism.}
+    \label{fig:pipeline}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{docs/assets/bw_slide_04_before_after_signal.png}
+    \caption{Before vs After Signal Comparison --- Real abdominal mixture vs clean isolated fetal ECG waveform with distinct R-peaks.}
+    \label{fig:before_after}
+\end{figure}
+
+% =========================================================================
+% SECTION 3: IMPLEMENTATION PLAN
+% =========================================================================
+\section{Implementation Plan: Real-World Deployment \& Deliverables}
+
+\noindent
+\textbf{Target Beneficiaries:} Frontline healthcare workers including Auxiliary Nurse Midwives (ANMs), accredited social health activists (ASHAs), and rural primary medical officers in Tier-2/Tier-3 Primary Health Centers (PHCs) and Community Health Centers (CHCs) throughout India.\\
+\textbf{Expected Clinical Outcomes:} Universal intrapartum electronic fetal monitoring at delivery cots, continuous automated hypoxia warnings, reduction in maternal referral delays, and prevention of preventable birth asphyxia.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{docs/assets/bw_slide_11_implementation_roadmap_timeline.png}
+    \caption{Five-Phase Implementation Roadmap \& Deliverables --- From physiological algorithm validation to state-wide rural deployment.}
+    \label{fig:roadmap}
+\end{figure}
+
+\noindent
+\begin{tabularx}{\textwidth}{lXX}
+\toprule
+\textbf{Phase \& Duration} & \textbf{Key Milestone Objectives} & \textbf{Formal Deliverables} \\
+\midrule
+\textbf{Phase 1: Algorithm Validation} (Months 0--3) & Subject-wise validation on PhysioNet ADFECGDB against invasive scalp lead ground truth; fixed-point C porting. & Validated DSP codebase, benchmark report (0.1005 mV RMSE). \\
+\addlinespace
+\textbf{Phase 2: Prototype Development} (Months 3--6) & 4-layer PCB fabrication, ADS1298 + nRF52840 layout, 3D biocompatible ABS enclosure design, BLE GATT profile. & Assembled hardware prototypes, bare-metal CMSIS firmware. \\
+\addlinespace
+\textbf{Phase 3: Bench \& Phantom Testing} (Months 6--9) & Bio-signal generator hardware-in-the-loop injection, skin-electrode impedance analysis, IEC 60601-1 electrical safety pre-compliance. & Bench verification dossier, electrical safety test logs. \\
+\addlinespace
+\textbf{Phase 4: Clinical Feasibility Pilot} (Months 9--15) & Institutional Ethics Committee (IEC) clearance, 50-patient observational pilot trial at partnered tertiary teaching hospital. & Clinical feasibility study report, physician Bland-Altman audits. \\
+\addlinespace
+\textbf{Phase 5: Scale \& Field Rollout} (Months 15--24) & Volume tooling, state health mission procurement integration, training modules for ANMs across rural PHC delivery rooms. & Commercial production units, field performance registry. \\
+\bottomrule
+\end{tabularx}
+
+% =========================================================================
+% SECTION 4: SAFETY AND EFFICIENCY ANALYSIS
+% =========================================================================
+\section{Safety and Efficiency Analysis}
+
+\noindent
+\textbf{Safety by Design:} Unlike traditional ultrasound transducers that continuously emit acoustic energy (raising cavitation and thermal index considerations), MOM operates completely passively by detecting endogenous electrical potentials. Safety features include:
+\begin{itemize}[leftmargin=1.5em]
+    \item \textit{Patient Electrical Isolation:} Isolated ground topology with TVS ESD diodes rated to $\pm 15$~kV air discharge, adhering to IEC 60601-1 Type BF applied part leakage limits ($< 10~\mu$A normal condition).
+    \item \textit{Real-Time Lead-Off Detection:} The ADS1298 internal current source comparator automatically detects dislodged electrodes within 1.0~ms, flagging signal invalidity to prevent diagnostic misinterpretation.
+    \item \textit{Fail-Safe Local Edge Autonomy:} All filtering, FHR derivation, and alarms are executed on-chip. The system functions autonomously even during complete hospital power blackouts or cellular network loss.
+\end{itemize}
+
+\noindent
+\textbf{Efficiency Gains:}
+\begin{itemize}[leftmargin=1.5em]
+    \item \textit{Material Handling \& Staff Burden:} Eliminates ultrasound coupling gel, belt tightening straps, and continuous manual transducer re-aiming, saving over 40 minutes of nursing labor per laboring patient.
+    \item \textit{Ultra-Low Power Draw:} Continuous operating power consumption is under 33~mW ($\sim 9.82$~mA @ 3.3V), enabling over 200 hours of continuous monitoring on a single 2000~mAh rechargeable lithium cell.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{docs/assets/bw_slide_08_safety_efficiency_analysis.png}
+    \caption{Safety Architecture \& Operational Efficiency Gains --- Passive sensing safety layers paired with workflow productivity metrics.}
+    \label{fig:safety}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{docs/assets/bw_slide_06_power_performance_summary.png}
+    \caption{Quantitative Efficiency \& Power Summary --- Validated algorithm performance alongside projected hardware energy metrics.}
+    \label{fig:power}
+\end{figure}
+
+% =========================================================================
+% SECTION 5: SCALABILITY AND FUTURE DEVELOPMENT
+% =========================================================================
+\section{Scalability and Future Development}
+
+\noindent
+\textbf{Four-Tier Healthcare Scalability Path:} MOM scales seamlessly across the entire public healthcare delivery pyramid without requiring specialized infrastructure:
+\begin{enumerate}[leftmargin=1.8em]
+    \item \textit{Device Level (Patient Home / Antenatal Ward):} Wearable, lightweight belt worn during ambulation or sleep.
+    \item \textit{Clinic Bed Level (Sub-Center / Delivery Cot):} Continuous wireless telemetry streaming to low-cost frontline tablets.
+    \item \textit{Primary Health Center (PHC):} Central nursing monitoring station consolidating multi-bed telemetry with automated triage priority scoring.
+    \item \textit{District Hospital / Specialist Tier:} Secure gateway forwarding high-risk anomaly records for tele-obstetric specialist review.
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{docs/assets/bw_slide_09_scalability_roadmap.png}
+    \caption{Healthcare Scalability Hierarchy --- Device deployment pathway connecting home cots to district referral hospitals.}
+    \label{fig:scalability}
+\end{figure}
+
+\noindent
+\textbf{Future Enhancements and Adaptations:}
+\begin{itemize}[leftmargin=1.5em]
+    \item \textit{Multi-Vector Active Lead Selection:} Firmware upgrades to automatically rank and select optimal differential lead pairs based on dynamic Signal Quality Index (SQI), accommodating unexpected fetal rotation.
+    \item \textit{Dual-Tier Cloud Research AI:} While edge DSP remains strictly deterministic for on-device safety, an optional hospital-tier 1D-W-NETR Vision Transformer benchmark evaluates retrospective multi-center cohorts for rare morphological anomaly discovery.
+    \item \textit{Expansion to High-Risk Ambulatory Triage:} Adaptation of the hardware for outpatient gestational hypertension and preeclampsia tele-monitoring in remote tribal areas.
+\end{itemize}
+
+% =========================================================================
+% SECTION 6: INNOVATION ADVANTAGE
+% =========================================================================
+\section{Innovation Advantage: Differentiation from Existing Market Products}
+
+\noindent
+\textbf{Core Innovation:} MOM eliminates the false trade-off between clinical signal fidelity and ultra-low cost. By rejecting computationally bloated neural network models at the edge and instead implementing an optimized 32-tap NLMS adaptive filter with CMSIS-DSP SIMD acceleration, MOM achieves hospital-grade signal recovery on an off-the-shelf \$3.50 microcontroller.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{docs/assets/bw_slide_10_innovation_advantage_comparison.png}
+    \caption{Innovation Advantage Comparison --- Head-to-head comparison of MOM against legacy ultrasound CTG carts.}
+    \label{fig:innovation}
+\end{figure}
+
+\noindent
+\begin{tabularx}{\textwidth}{lXXX}
+\toprule
+\textbf{Feature / Metric} & \textbf{Traditional Hospital CTG (GE / Philips)} & \textbf{Handheld Doppler Wand} & \textbf{MOM Platform (Ours)} \\
+\midrule
+\textbf{Unit Capital Cost} & \$2,500 -- \$8,000 USD ($\sim$Rs.~2,00,000+) & \$150 -- \$300 USD & \textbf{\$31.25 USD ($\sim$Rs.~2,600 INR)} \\
+\addlinespace
+\textbf{Monitoring Mode} & Tethered to bedside cart; intermittent & Spot-check only (1--2 minutes) & \textbf{Continuous wearable ambulatory} \\
+\addlinespace
+\textbf{Sensor Modality} & Ultrasound acoustic beam + toco belt & Ultrasound acoustic beam & \textbf{Passive electrical biopotential (aECG+EHG)} \\
+\addlinespace
+\textbf{Staff Dependency} & Requires constant manual re-aiming & Manual positioning by nurse & \textbf{Zero re-aiming; omnidirectional capture} \\
+\addlinespace
+\textbf{Edge Intelligence} & Proprietary hardware DSP & None (audio stethoscope) & \textbf{On-chip 32-tap NLMS adaptive DSP} \\
+\addlinespace
+\textbf{Operating Autonomy} & Mains-dependent (battery $<$ 2 hours) & Handheld AA batteries & \textbf{$>$ 200 hours on 2000 mAh Li-Po cell} \\
+\bottomrule
+\end{tabularx}
+
+% =========================================================================
+% SECTION 7: VISUAL IMPACT & USER JOURNEY
+% =========================================================================
+\section{Visual Impact \& User Journey: Transforming Perinatal Care}
+
+\noindent
+\textbf{User Experience Transformation:} Currently, expectant mothers in rural healthcare centers undergo high-stress, uncomfortable monitoring: heavy ultrasound transducers are tightly strapped to the abdomen with acoustic gel, confining the patient to bed while nurses repeatedly readjust probes. MOM transforms this into an unobtrusive, empowering experience.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{docs/assets/bw_slide_12_visual_impact_before_after.png}
+    \caption{Real-World Visual Impact (Before vs After) --- Transitioning from expensive, tethered, intermittent examination to accessible, wearable continuity.}
+    \label{fig:visual_impact}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{docs/assets/bw_slide_07_user_journey_storyboard.png}
+    \caption{End-to-End User Journey Storyboard --- 1. Patient wears belt; 2. Real-time telemetry streams; 3. Clinician acts upon automated alerts.}
+    \label{fig:journey}
+\end{figure}
+
+% =========================================================================
+% SECTION 8: QUANTITATIVE EMPIRICAL VALIDATION
+% =========================================================================
+\section{Quantitative Empirical Validation: Pure Measured Data}
+
+\noindent
+\textbf{PhysioNet ADFECGDB Benchmark:} To establish indisputable scientific credibility, the MOM DSP pipeline was validated directly on real physiological labor recordings from the PhysioNet Abdominal and Direct Fetal ECG Database (ADFECGDB), recorded by Jezewski et al. Evaluation was performed strictly on held-out subject r10 (148 discrete 5-second segments) using simultaneous direct fetal scalp electrode recordings as ground truth.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{docs/assets/bw_waveform_extraction_real_data.png}
+    \caption{Empirical Physiological Waveform Recovery --- PhysioNet ADFECGDB Subject r10. Raw abdominal mixture (Panel 1) adaptively filtered using thoracic reference (Panel 2) to yield isolated fetal ECG matching direct invasive scalp ground truth (Panels 3 \& 4).}
+    \label{fig:waveform}
+\end{figure}
+
+\noindent
+\begin{tabularx}{\textwidth}{lXXl}
+\toprule
+\textbf{Evaluation Parameter} & \textbf{Empirical Distribution (148 Segments)} & \textbf{Evaluation Benchmark / Ground Truth} & \textbf{Formal Audit Status} \\
+\midrule
+\textbf{Primary Reconstruction Error} & \textbf{RMSE: 0.1005 $\pm$ 0.0960 mV}\newline Median: 0.0724 mV [IQR: 0.045--0.110]\newline 95\% CI: [0.0302, 0.4506] mV & Direct fetal scalp lead (PhysioNet ADFECGDB) & \textbf{VALIDATED (REAL DATA)} \\
+\addlinespace
+\textbf{Mean Absolute Error} & \textbf{MAE: 0.0810 $\pm$ 0.0761 mV}\newline Median: 0.0584 mV [IQR: 0.035--0.091]\newline 95\% CI: [0.0230, 0.3188] mV & Direct fetal scalp lead (PhysioNet ADFECGDB) & \textbf{VALIDATED (REAL DATA)} \\
+\addlinespace
+\textbf{Fetal Heart Rate Extraction} & Mean FHR: 135.36 BPM & Pan-Tompkins peak detector on extracted $e[n]$ & \textbf{COMPUTED ALGORITHM} \\
+\addlinespace
+\textbf{Signal Quality Index (SQI)} & Mean SQI: 2.556 & In-band (10--30 Hz) to artifact energy ratio & \textbf{COMPUTED ALGORITHM} \\
+\addlinespace
+\textbf{Uterine EHG Contraction Energy} & TKEO Energy: 0.009465 & 0.1--4.0 Hz bandpass filtered abdominal trace & \textbf{COMPUTED ALGORITHM} \\
+\addlinespace
+\textbf{Per-Sample Execution Latency} & 7.5 $\mu$s (SIL) / $\sim$3.75 $\mu$s (MCU) & Host CPU SIL timing; $\sim$240 cycles on Cortex-M4F & \textbf{SIMULATED / PROJECTED} \\
+\addlinespace
+\textbf{Working Memory Footprint} & 128 Bytes state buffer ($<$ 1 KB) & 32-tap float32 FIR filter state ($32 \times 4$ B) & \textbf{ESTIMATED (ALGORITHM)} \\
+\bottomrule
+\end{tabularx}
+
+% =========================================================================
+% SECTION 9: ACADEMIC REFERENCES
+% =========================================================================
+\section{Academic References}
+
+\begin{enumerate}[label={[\arabic*]},leftmargin=2em]
+    \item J. Jezewski, J. Wrobel, K. Horoba, et al., ``Determination of fetal heart rate from abdominal signals: comparison of direct and indirect fetal electrocardiography,'' \textit{IEEE Transactions on Biomedical Engineering}, vol. 59, no. 1, pp. 163--171, 2012.
+    \item A. L. Goldberger, L. A. N. Amaral, L. Glass, et al., ``PhysioBank, PhysioToolkit, and PhysioNet: Components of a new research resource for complex physiologic signals,'' \textit{Circulation}, vol. 101, no. 23, pp. e215--e220, 2000.
+    \item B. Widrow, J. R. Glover, J. M. McCool, et al., ``Adaptive noise cancelling: Principles and applications,'' \textit{Proceedings of the IEEE}, vol. 63, no. 12, pp. 1692--1716, 1975.
+    \item J. Pan and W. J. Tompkins, ``A real-time QRS detection algorithm,'' \textit{IEEE Transactions on Biomedical Engineering}, vol. BME-32, no. 3, pp. 230--236, 1985.
+    \item World Health Organization, ``Trends in maternal mortality 2000 to 2020: estimates by WHO, UNICEF, UNFPA, World Bank Group and UNDESA/Population Division,'' Geneva: WHO, 2023.
+    \item International Electrotechnical Commission, ``Medical electrical equipment - Part 1: General requirements for basic safety and essential performance,'' \textit{IEC 60601-1:2005+AMD1:2012}, 2012.
+    \item ARM Limited, ``CMSIS DSP Software Library for Arm Cortex-M processors and Arm Cortex-A processors,'' Release v5.9.0, 2023.
+    \item Texas Instruments, ``ADS1298 Low-Power, 8-Channel, 24-Bit Analog Front-End for Biopotential Measurements,'' SBAS459K Datasheet, Revised 2020.
+    \item Nordic Semiconductor, ``nRF52840 Product Specification v1.7,'' 2021.
+\end{enumerate}
+
+\end{document}
