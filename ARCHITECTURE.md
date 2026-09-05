@@ -24,8 +24,9 @@
 | Layer | Responsibilities |
 | :--- | :--- |
 | **Firmware** | AFE driver (Strict TI Boot Sequence), IMU, battery. **CRITICAL:** Must enforce BLE Data Length Extension (DLE) and 2M PHY. **CRITICAL:** Do NOT save continuous waveform data to internal Flash NVS to avoid hardware destruction; use external SD or RAM ring buffers. |
-| **DSP** | **CRITICAL:** 0.5Hz High-Pass Filter (Butterworth) for maternal baseline wander removal. Mains rejection, motion gating, Adaptive Filtering (NLMS), QRS detection, EHG/PVDF feature extraction. |
-| **Edge AI** | Feature fusion, personalized baseline, confidence score and alert state. |
-| **Mobile app** | Pairing, belt-placement guidance, live signal quality, trends, symptoms and BP-device integration. |
-| **Clinician dashboard** | FHR/MHR/EHG trends, signal quality, maternal vitals, event timeline and raw-waveform review. |
+| **DSP (Edge)** | **CRITICAL:** 0.5Hz High-Pass Filter (Butterworth) for maternal baseline wander removal. Mains rejection, motion gating, Adaptive Filtering (NLMS), QRS detection, EHG/PVDF feature extraction. |
+| **Edge AI (TinyML)** | Real-time lightweight inference: Feature fusion, personalized baseline, and immediate "Signal Quality Index" / Confidence Score. |
+| **Mobile app (IoT Gateway)** | Pairing, belt-placement guidance, live signal quality, trends. **NEW:** Acts as an IoT Gateway. Buffers the pre-filtered BLE data and streams it via **MQTT / WebSockets** to the Cloud Backend. |
+| **Cloud AI (Backend)** | Heavy Deep Learning (PyTorch/TensorFlow). Processes the aggregated MQTT data through massive Transformer/LSTM models for exact preterm-birth prediction and complex anomaly detection that cannot fit on the Edge. |
+| **Clinician dashboard** | Web UI (React/WebGL). Displays FHR/MHR/EHG trends, Cloud AI predictions, maternal vitals, event timeline and raw-waveform review. |
 | **Dataset layer** | PhysioNet NIFECG + Term-Preterm EHG datasets for algorithm development; versioned experiments and reproducible metrics. |
