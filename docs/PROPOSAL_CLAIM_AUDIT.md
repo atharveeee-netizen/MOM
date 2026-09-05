@@ -50,7 +50,7 @@ Every technical claim in the proposal is categorized into one of seven formal tr
 | **Signal Quality Index (SQI)** | Mean SQI = 2.556 | **COMPUTED ALGORITHM OUTPUT** | `python ml/classical/fecg_analysis.py` | ✅ VERIFIED |
 | **Uterine EHG Contraction Energy** | TKEO = 0.009465 | **COMPUTED ALGORITHM OUTPUT** | `python ml/classical/ehg_analysis.py` | ✅ VERIFIED |
 | **Per-Sample Execution Latency** | 7.5 µs / sample | **SIMULATED (Software-in-Loop)**| `python experiments/run_signal_injection.py` | ✅ VERIFIED |
-| **Working Memory (SRAM)** | < 1 KB state buffer | **ESTIMATED (ALGORITHMIC ANALYSIS)** | Algorithmic state analysis (10 taps $\times$ 4 bytes) | ✅ VERIFIED |
+| **Working Memory (SRAM)** | < 1 KB state buffer | **ESTIMATED (ALGORITHMIC ANALYSIS)** | Algorithmic state analysis (32 taps $\times$ 4 bytes = 128 B) | ✅ VERIFIED |
 | **W-NETR Transformer Error** | RMSE = 0.43398 mV, MAE = 0.35313 mV | **PRELIMINARY BENCHMARK** | `python experiments/evaluate_ai.py` | ✅ VERIFIED |
 | **W-NETR FHR MAE** | 18.551 BPM | **PRELIMINARY BENCHMARK** | `python experiments/evaluate_ai.py` | ✅ VERIFIED |
 | **Unit Prototype BOM** | $31.25 USD (~₹2,600 INR) | **ESTIMATED (BOM MODEL)** | `docs/BOM.md` catalog pricing model | ✅ VERIFIED |

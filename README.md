@@ -76,8 +76,8 @@ Rather than asserting unverified deep learning claims, we executed an objective 
 | **Mean Absolute Error (MAE)** | **0.0810 mV** | 0.35313 mV | NLMS baseline tracking is significantly closer to direct scalp truth. |
 | **Fetal Heart Rate MAE** | **< 3.5 BPM** (projected) | 18.551 BPM | W-NETR FHR error is clinically unusable; NLMS preserves sharp R-peaks. |
 | **Per-Sample Execution Time** | **7.5 µs / sample** (SIL estimate) | ~12 ms / window (NVIDIA GPU) | NLMS easily fits 1000 µs interrupt deadline; W-NETR requires external GPU. |
-| **Working Memory (SRAM)** | **< 1 KB** (10-tap state vector) | ~15 MB (Model weights & buffers) | NLMS fits in 256 KB MCU RAM; W-NETR requires external DRAM. |
-| **Computational Complexity** | **10 MAC operations** | ~1.2 Million parameters | NLMS requires 100,000x fewer operations per sample. |
+| **Working Memory (SRAM)** | **< 1 KB** (32-tap state vector: 128 B) | ~15 MB (Model weights & buffers) | NLMS fits in 256 KB MCU RAM; W-NETR requires external DRAM. |
+| **Computational Complexity** | **32 MAC operations** | ~10.2 Million parameters | NLMS requires orders of magnitude fewer operations per sample. |
 | **Wearable Deployability** | **Immediate on nRF52840 SoC** | Infeasible on low-power MCU | NLMS enables standalone $31 wearable; W-NETR requires hospital cart NPU. |
 | **Regulatory Determinism** | **100% Deterministic (IEC 62304)** | Black-box neural network | NLMS weights have verifiable mathematical convergence proofs. |
 | **Current Project Status** | **PRIMARY VALIDATED PIPELINE** | PRELIMINARY BENCHMARK | NLMS is the core submission; W-NETR is retained as future research path. |

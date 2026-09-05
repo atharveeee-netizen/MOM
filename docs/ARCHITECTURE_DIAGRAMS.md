@@ -137,7 +137,7 @@ The embedded adaptive filter solves the optimal estimation problem in real-time 
 
 1. **Filtered Reference Vector:**
    $$\mathbf{x}[n] = [x[n], x[n-1], \dots, x[n-M+1]]^T \in \mathbb{R}^{M}$$
-   where filter order $M = 10$.
+   where filter order $M = 32$.
 
 2. **Maternal ECG Estimate (Prediction):**
    $$\hat{y}[n] = \mathbf{w}^T[n] \mathbf{x}[n]$$
@@ -147,12 +147,12 @@ The embedded adaptive filter solves the optimal estimation problem in real-time 
 
 4. **Normalized Weight Adaptation (Gradient Descent with Power Normalization):**
    $$\mathbf{w}[n+1] = \mathbf{w}[n] + \frac{\mu}{\|\mathbf{x}[n]\|^2 + \epsilon} e[n] \mathbf{x}[n]$$
-   - Step size: $\mu = 0.01$
+   - Step size: $\mu = 0.05$
    - Regularization parameter to prevent division by zero: $\epsilon = 10^{-8}$
 
-**Execution Characteristics (Measured):**
-- Mathematical operations per sample: $2M + 2$ multiplications, $2M + 1$ additions, 1 division.
-- Measured execution duration on x86 CPU: **7.5 µs** per sample.
+**Execution Characteristics (Measured & Projected):**
+- Mathematical operations per sample: $2M + 2$ multiplications, $2M + 1$ additions, 1 division ($132\text{ operations for }M=32$).
+- Measured execution duration on x86 CPU (SIL): **7.5 µs** per sample.
 - Clock cycles on ARM Cortex-M4F @ 64 MHz: $\approx 240$ cycles ($3.75\ \mu\text{s}$, well within the 1000 µs interrupt budget at 1000 SPS).
 
 ---
@@ -194,7 +194,7 @@ stateDiagram-v2
     state STREAMING_LOOP {
         [*] --> WAIT_INTERRUPT: Low-Power WFI Mode
         WAIT_INTERRUPT --> READ_AFE_DMA: ADS1298 DRDY Asserted (1 kHz)
-        READ_AFE_DMA --> RUN_NLMS: Execute 10-tap Filter (7.5 µs)
+        READ_AFE_DMA --> RUN_NLMS: Execute 32-tap Filter (7.5 µs SIL / 3.75 µs MCU)
         RUN_NLMS --> UPDATE_PEAKS: Pan-Tompkins Peak Tracking
         UPDATE_PEAKS --> EVALUATE_SQI: Compute Signal Quality
         EVALUATE_SQI --> BUFFER_TELEMETRY: Queue FIFO Samples

@@ -36,7 +36,7 @@ The final submission deliverable **`AURA_MOM_PRO_Vishwakarma_Stage1_Proposal.pdf
 
 ## 2. Experimental Verification Baseline
 
-- **Primary DSP Algorithm:** Normalized Least Mean Squares (NLMS) 10-tap adaptive FIR filter.
+- **Primary DSP Algorithm:** Normalized Least Mean Squares (NLMS) 32-tap adaptive FIR filter ($\mu=0.05, \epsilon=10^{-8}$).
 - **Evaluation Corpus:** PhysioNet ADFECGDB research database (held-out test subject `r10`).
 - **Primary Reconstruction Error:** **RMSE = 0.1005 mV**
 - **Primary Mean Absolute Error:** **MAE = 0.0810 mV**

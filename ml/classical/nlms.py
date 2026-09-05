@@ -7,9 +7,10 @@ import json
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 from scipy.signal import find_peaks
 
-def nlms_filter(primary, reference, mu=0.01, filter_order=10):
+def nlms_filter(primary, reference, mu=0.05, filter_order=32):
     """
     Normalized Least Mean Squares (NLMS) adaptive filter.
+    Benchmark configuration: 32-tap FIR filter, mu = 0.05, epsilon = 1e-8.
     """
     n = len(primary)
     w = np.zeros(filter_order)
