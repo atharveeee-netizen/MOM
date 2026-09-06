@@ -4,6 +4,7 @@ import yaml
 import torch
 import time
 import numpy as np
+from datetime import datetime
 from torch.utils.data import DataLoader
 from torch.autograd import Variable
 import logging
@@ -37,11 +38,11 @@ def calculate_rmse(pred, target):
 
 def train_syzygy_orchestrator(config_path):
     cfg = load_config(config_path)
-    print(f"--- SYZYGY ORCHESTRATOR: W-NETR FULL TRAINING ---")
-    print(f"Experiment: {cfg['experiment']['name']}")
+    print(f"--- SYZYGY ORCHESTRATOR: W-NETR FULL TRAINING ---", flush=True)
+    print(f"Experiment: {cfg['experiment']['name']}", flush=True)
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"Assigned Device: {device}")
+    print(f"Assigned Device: {device}", flush=True)
     
     seed = cfg['training']['seeds'][0]
     torch.manual_seed(seed)
@@ -49,6 +50,50 @@ def train_syzygy_orchestrator(config_path):
     
     # Instantiate exact W-NETR PyTorch Module (Unmodified Architecture)
     model = build_UNETR().to(device)
+    
+    # Save directory resolution
+    save_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', cfg['checkpoints']['save_dir']))
+    os.makedirs(save_dir, exist_ok=True)
+    ckpt_path = os.path.join(save_dir, 'best_model.pkl')
+    
+    # Telemetry CSV resolution
+    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    telemetry_csv = os.path.join(repo_root, 'results', 'training_telemetry.csv')
+    
+    start_epoch = 0
+    best_val_loss = float('inf')
+    
+    # Check for existing telemetry to resume cleanly
+    if os.path.exists(telemetry_csv):
+        try:
+            with open(telemetry_csv, 'r') as f:
+                lines = [l.strip() for l in f if l.strip()]
+            if len(lines) > 1:
+                # Find last completed epoch and best val loss
+                last_epoch = 0
+                for line in lines[1:]:
+                    parts = line.split(',')
+                    if len(parts) >= 7:
+                        ep = int(parts[0])
+                        vl = float(parts[4])
+                        last_epoch = max(last_epoch, ep)
+                        best_val_loss = min(best_val_loss, vl)
+                start_epoch = last_epoch
+                print(f"Found existing telemetry with {last_epoch} completed epochs. Best Val Loss: {best_val_loss:.5f}", flush=True)
+        except Exception as e:
+            print(f"Note: Could not parse telemetry CSV ({e}). Starting fresh or from checkpoint.", flush=True)
+            
+    # Load weights from checkpoint if available
+    if os.path.exists(ckpt_path):
+        try:
+            state_dict = torch.load(ckpt_path, map_location=device)
+            model.load_state_dict(state_dict)
+            print(f"Loaded existing checkpoint from {ckpt_path}! Resuming training from Epoch {start_epoch + 1}.", flush=True)
+        except Exception as e:
+            print(f"Warning: Failed to load checkpoint ({e}). Starting from random initialization.", flush=True)
+    else:
+        print("No prior checkpoint found. Starting initial weights.", flush=True)
+        
     optimizer = torch.optim.AdamW(
         model.parameters(), 
         lr=float(cfg['training']['learning_rate']), 
@@ -56,23 +101,15 @@ def train_syzygy_orchestrator(config_path):
     )
     
     l1_loss = torch.nn.L1Loss()
-    
-    # Ensure save directory is absolute (since we change CWD later)
-    save_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', cfg['checkpoints']['save_dir']))
-    os.makedirs(save_dir, exist_ok=True)
-    
     epochs = cfg['training']['epochs']
-    print(f"Starting {epochs}-epoch convergence run. Target End Time: Tomorrow 9 AM")
+    print(f"Configured for {epochs} total epochs. Starting at Epoch {start_epoch + 1}...", flush=True)
     
-    # Load Datasets using absolute paths to the underlying dataset directory
+    # Load Datasets using absolute paths
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../src/ai/W-NETR-for-FECG-extraction'))
-    
-    # WFDB paths in the .npy arrays are relative (e.g., 'ADFECGDB/...'). 
-    # We must change the working directory so wfdb.rdsamp resolves them correctly.
     os.chdir(base_dir)
     
     root = cfg['data']['dataset_name']
-    print(f"Loading datasets from {os.path.join(base_dir, root)}...")
+    print(f"Loading datasets from {os.path.join(base_dir, root)}...", flush=True)
     trainset = Dataset(root=root, load_set='train', transform=None)
     train_loader = DataLoader(
         trainset, 
@@ -93,13 +130,12 @@ def train_syzygy_orchestrator(config_path):
         pin_memory=False
     )
 
-    best_val_loss = float('inf')
     early_stopping_patience = cfg['training']['early_stopping_patience']
     patience_counter = 0
 
-    print("Initialization complete. Pipeline execution starting...")
+    print("Initialization complete. Pipeline execution running...", flush=True)
     
-    for epoch in range(epochs):
+    for epoch in range(start_epoch, epochs):
         model.train()
         running_loss = 0.0
         start_time = time.time()
@@ -152,23 +188,35 @@ def train_syzygy_orchestrator(config_path):
                 
         val_loss /= len(val_loader)
         val_rmse /= len(val_loader)
+        duration = time.time() - start_time
+        timestamp_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         
-        print(f"Epoch [{epoch+1}/{epochs}] - Time: {time.time()-start_time:.1f}s - Train Loss: {train_loss:.5f} - Val Loss: {val_loss:.5f} - Val RMSE: {val_rmse:.5f} mV")
-        
-        # Incremental Save
+        is_best = False
         if val_loss < best_val_loss:
             best_val_loss = val_loss
             patience_counter = 0
-            save_path = os.path.join(save_dir, 'best_model.pkl')
-            torch.save(model.state_dict(), save_path)
-            print(f"  --> [SAVED] New best model: RMSE {val_rmse:.5f}")
+            is_best = True
+            torch.save(model.state_dict(), ckpt_path)
+            best_msg = f" --> [SAVED] New best model: RMSE {val_rmse:.5f}"
         else:
             patience_counter += 1
-            if patience_counter >= early_stopping_patience:
-                print(f"Early stopping triggered after {epoch+1} epochs.")
-                break
+            best_msg = ""
+            
+        log_line = f"[{timestamp_str}] Epoch [{epoch+1}/{epochs}] - Time: {duration:.1f}s - Train Loss: {train_loss:.5f} - Val Loss: {val_loss:.5f} - Val RMSE: {val_rmse:.5f} mV{best_msg}"
+        print(log_line, flush=True)
+        
+        # Append to telemetry CSV
+        try:
+            with open(telemetry_csv, 'a') as f:
+                f.write(f"{epoch+1},{timestamp_str},{duration:.1f},{train_loss:.5f},{val_loss:.5f},{val_rmse:.5f},{is_best}\n")
+        except Exception as e:
+            print(f"Warning: Failed to append to telemetry CSV: {e}", flush=True)
+            
+        if patience_counter >= early_stopping_patience:
+            print(f"[{timestamp_str}] Early stopping triggered after {epoch+1} epochs.", flush=True)
+            break
 
-    print(f"Training Complete. Best Val Loss: {best_val_loss:.5f}")
+    print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Training Complete. Best Val Loss: {best_val_loss:.5f}", flush=True)
 
 if __name__ == "__main__":
     cfg_path = os.path.join(os.path.dirname(__file__), '../configs/wnetr_training.yaml')
