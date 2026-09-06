@@ -100,6 +100,14 @@ def train_syzygy_orchestrator(config_path):
         weight_decay=float(cfg['training']['weight_decay'])
     )
     
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+        optimizer, 
+        mode='min', 
+        factor=0.5, 
+        patience=10, 
+        min_lr=1e-6
+    )
+    
     l1_loss = torch.nn.L1Loss()
     epochs = cfg['training']['epochs']
     print(f"Configured for {epochs} total epochs. Starting at Epoch {start_epoch + 1}...", flush=True)
@@ -130,12 +138,18 @@ def train_syzygy_orchestrator(config_path):
         pin_memory=False
     )
 
-    early_stopping_patience = cfg['training']['early_stopping_patience']
+    early_stopping_patience = cfg['training'].get('early_stopping_patience', 500)
     patience_counter = 0
 
     print("Initialization complete. Pipeline execution running...", flush=True)
+    target_cutoff = datetime(2026, 9, 7, 12, 0, 0)
     
     for epoch in range(start_epoch, epochs):
+        now = datetime.now()
+        if now >= target_cutoff:
+            print(f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] Target end time 12:00 PM (2026-09-07) reached. Completing training run cleanly.", flush=True)
+            break
+
         model.train()
         running_loss = 0.0
         start_time = time.time()
@@ -201,8 +215,13 @@ def train_syzygy_orchestrator(config_path):
         else:
             patience_counter += 1
             best_msg = ""
-            
-        log_line = f"[{timestamp_str}] Epoch [{epoch+1}/{epochs}] - Time: {duration:.1f}s - Train Loss: {train_loss:.5f} - Val Loss: {val_loss:.5f} - Val RMSE: {val_rmse:.5f} mV{best_msg}"
+        # Scheduler step and dynamic LR logging
+        curr_lr = optimizer.param_groups[0]['lr']
+        scheduler.step(val_loss)
+        new_lr = optimizer.param_groups[0]['lr']
+        lr_msg = f" | LR: {new_lr:.2e}" if new_lr != curr_lr else ""
+
+        log_line = f"[{timestamp_str}] Epoch [{epoch+1}/{epochs}] - Time: {duration:.1f}s - Train Loss: {train_loss:.5f} - Val Loss: {val_loss:.5f} - Val RMSE: {val_rmse:.5f} mV{best_msg}{lr_msg}"
         print(log_line, flush=True)
         
         # Append to telemetry CSV

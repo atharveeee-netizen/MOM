@@ -29,7 +29,7 @@ training:
   optimizer: "AdamW"
   
   # Validation / Convergence metrics
-  early_stopping_patience: 25
+  early_stopping_patience: 500
   primary_metric: "val_rmse"
   
   # Seed ensemble
