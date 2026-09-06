@@ -1,0 +1,15 @@
+{
+    "status": "COMPUTED FROM REAL DATA",
+    "model": "1D-W-NETR (Overnight Run)",
+    "dataset": "ADFECGDB (r10 Test Set)",
+    "metrics": {
+        "RMSE": 0.43398,
+        "MAE": 0.35313,
+        "FHR_MAE": 18.551
+    },
+    "baseline_nlms": {
+        "RMSE": 0.1005,
+        "MAE": 0.081
+    },
+    "conclusion": "Does not exceed NLMS baseline. Kept as evidence of transparent validation."
+}

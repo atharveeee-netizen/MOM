@@ -9,7 +9,7 @@ import wfdb
 from scipy.signal import find_peaks
 
 # Add W-NETR path
-sys.path.append(os.path.join(os.path.dirname(__file__), '../ml/pretrained/W-NETR-for-FECG-extraction'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '../../src/ai/W-NETR-for-FECG-extraction'))
 from networks_real import build_UNETR
 from util.dataset_real import Dataset
 
@@ -34,7 +34,7 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     net = build_UNETR()
     
-    model_path = os.path.join(os.path.dirname(__file__), '../ml/pretrained/W-NETR-for-FECG-extraction/models/best_model.pkl')
+    model_path = os.path.join(os.path.dirname(__file__), '../../src/ai/W-NETR-for-FECG-extraction/models/best_model.pkl')
     try:
         net.load_state_dict(torch.load(model_path, map_location=device))
         print("Successfully loaded overnight best checkpoint.")
@@ -46,8 +46,8 @@ def main():
 
     # Load TEST SET paths directly to ensure no cross-contamination
     # We generated fecg_paths_test.npy and mixture_paths_test.npy
-    test_fecg_paths = np.load(os.path.join(os.path.dirname(__file__), '../ml/pretrained/W-NETR-for-FECG-extraction/ADFECGDB/fecg_paths_test.npy'))
-    test_mixture_paths = np.load(os.path.join(os.path.dirname(__file__), '../ml/pretrained/W-NETR-for-FECG-extraction/ADFECGDB/mixture_paths_test.npy'))
+    test_fecg_paths = np.load(os.path.join(os.path.dirname(__file__), '../../src/ai/W-NETR-for-FECG-extraction/ADFECGDB/fecg_paths_test.npy'))
+    test_mixture_paths = np.load(os.path.join(os.path.dirname(__file__), '../../src/ai/W-NETR-for-FECG-extraction/ADFECGDB/mixture_paths_test.npy'))
 
     # Temporary dataset class to just iterate test paths
     class TestDataset(torch.utils.data.Dataset):
@@ -57,7 +57,7 @@ def main():
         def __len__(self):
             return len(self.fecg_paths)
         def __getitem__(self, idx):
-            wnetr_root = os.path.join(os.path.dirname(__file__), '../ml/pretrained/W-NETR-for-FECG-extraction')
+            wnetr_root = os.path.join(os.path.dirname(__file__), '../../src/ai/W-NETR-for-FECG-extraction')
             fecg_path = os.path.join(wnetr_root, self.fecg_paths[idx])
             mix_path = os.path.join(wnetr_root, self.mixture_paths[idx])
             
@@ -125,7 +125,7 @@ def main():
         "conclusion": "Passes engineering evidence bar." if final_rmse < 0.1005 else "Does not exceed NLMS baseline. Kept as evidence of transparent validation."
     }
 
-    res_path = os.path.join(os.path.dirname(__file__), '../results/proposal_metrics.json')
+    res_path = os.path.join(os.path.dirname(__file__), '../../results/metrics/proposal_metrics.json')
     with open(res_path, 'w') as f:
         json.dump(output_json, f, indent=4)
 

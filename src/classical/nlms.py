@@ -101,7 +101,7 @@ def evaluate_split(dataset_path, split_file):
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset", type=str, default=os.path.join(os.path.dirname(__file__), "..", "pretrained", "W-NETR-for-FECG-extraction", "ADFECGDB"), help="Path to generated ADFECGDB")
+    parser.add_argument("--dataset", type=str, default=os.path.join(os.path.dirname(__file__), "..", "ai", "W-NETR-for-FECG-extraction", "ADFECGDB"), help="Path to generated ADFECGDB")
     parser.add_argument("--split", type=str, default=os.path.join(os.path.dirname(__file__), "..", "..", "experiments", "data_split", "adfe_cgdb_split.json"), help="Path to split JSON")
     args = parser.parse_args()
     

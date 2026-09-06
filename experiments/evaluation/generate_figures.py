@@ -8,12 +8,12 @@ def generate_figure():
     print("Generating physiological waveforms figure...")
     
     # Load test split (r10)
-    split_file = os.path.join(os.path.dirname(__file__), "data_split", "adfe_cgdb_split.json")
+    split_file = os.path.join(os.path.dirname(__file__), "..", "data_split", "adfe_cgdb_split.json")
     with open(split_file, "r") as f:
         splits = json.load(f)
     
     sub = splits["test"][0] # r10
-    dataset_path = os.path.join(os.path.dirname(__file__), "..", "ml", "pretrained", "W-NETR-for-FECG-extraction", "ADFECGDB")
+    dataset_path = os.path.join(os.path.dirname(__file__), "../..", "src", "ai", "W-NETR-for-FECG-extraction", "ADFECGDB")
     
     mix_file = os.path.join(dataset_path, 'mixture', f'{sub}_1_0')
     ref_file = os.path.join(dataset_path, 'mixture', f'{sub}_2_0')
@@ -31,7 +31,7 @@ def generate_figure():
     
     # Filter (NLMS)
     from sys import path
-    path.append(os.path.join(os.path.dirname(__file__), "..", "ml", "classical"))
+    path.append(os.path.join(os.path.dirname(__file__), "../..", "src", "classical"))
     from nlms import nlms_filter
     
     fecg_est, _ = nlms_filter(primary, reference, mu=0.05, filter_order=32)
@@ -64,7 +64,7 @@ def generate_figure():
     
     plt.tight_layout()
     
-    out_dir = os.path.join(os.path.dirname(__file__), "..", "results", "figures")
+    out_dir = os.path.join(os.path.dirname(__file__), "../..", "results", "figures")
     os.makedirs(out_dir, exist_ok=True)
     out_path = os.path.join(out_dir, "extraction_results.png")
     plt.savefig(out_path, dpi=300)

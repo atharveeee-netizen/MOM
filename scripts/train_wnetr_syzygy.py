@@ -9,7 +9,7 @@ from torch.autograd import Variable
 import logging
 
 # Symlink path integration for raw W-NETR architecture
-sys.path.append(os.path.join(os.path.dirname(__file__), '../ml/pretrained/W-NETR-for-FECG-extraction'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '../src/ai/W-NETR-for-FECG-extraction'))
 try:
     from networks_real import build_UNETR
     from util.dataset_real import Dataset
@@ -65,7 +65,7 @@ def train_syzygy_orchestrator(config_path):
     print(f"Starting {epochs}-epoch convergence run. Target End Time: Tomorrow 9 AM")
     
     # Load Datasets using absolute paths to the underlying dataset directory
-    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../ml/pretrained/W-NETR-for-FECG-extraction'))
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../src/ai/W-NETR-for-FECG-extraction'))
     
     # WFDB paths in the .npy arrays are relative (e.g., 'ADFECGDB/...'). 
     # We must change the working directory so wfdb.rdsamp resolves them correctly.

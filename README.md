@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="docs/assets/aura_mom_pro_concept.jpg" alt="AURA-MOM PRO Logo" width="100%" style="border-radius: 12px; margin-bottom: 20px;" />
+  <img src="docs/media/aura_mom_pro_concept.jpg" alt="AURA-MOM PRO Logo" width="100%" style="border-radius: 12px; margin-bottom: 20px;" />
   
   # AURA-MOM PRO: Non-Invasive Fetal ECG Extraction at the Edge
   
@@ -23,7 +23,7 @@ An FSE is a highly invasive spiral wire physically screwed into the baby's scalp
 
 <div align="center">
   <a href="https://pubmed.ncbi.nlm.nih.gov/22425712/">
-    <img src="docs/assets/real_fetal_risk_article.png" alt="PubMed article highlighting fetal monitoring risks" width="80%" style="border-radius: 8px; border: 1px solid #ccc; margin: 15px 0;" />
+    <img src="docs/media/fetal_monitoring_crisis_news.jpg" alt="PubMed article highlighting fetal monitoring risks" width="80%" style="border-radius: 8px; border: 1px solid #ccc; margin: 15px 0;" />
   </a>
   <br><em>The medical community is actively highlighting the severe risks of invasive fetal monitoring. <a href="https://pubmed.ncbi.nlm.nih.gov/22425712/">Read the research here.</a></em>
 </div>
@@ -52,7 +52,7 @@ The challenge? The mother's heartbeat (MECG) is up to **1000x stronger** than th
 ## 4. End-to-End System & Hardware Architecture
 
 <div align="center">
-  <img src="docs/assets/architecture_highly_explained.jpg" alt="AURA-MOM PRO System Architecture" width="100%" style="border-radius: 8px; border: 1px solid #ccc; margin: 15px 0;" />
+  <img src="docs/media/architecture_highly_explained.jpg" alt="AURA-MOM PRO System Architecture" width="100%" style="border-radius: 8px; border: 1px solid #ccc; margin: 15px 0;" />
   <br><em>AURA-MOM PRO End-to-End Edge to Cloud System Architecture</em>
 </div>
 
@@ -75,7 +75,7 @@ The challenge? The mother's heartbeat (MECG) is up to **1000x stronger** than th
 5. Normalized Weight Update:   w[n+1] = w[n] + [ μ / (ε + ||x[n]||^2) ] · e[n] · x[n]
 ```
 
-- **Filter Parameters:** $N = 10\text{ taps}$, $\mu = 0.05$, $\epsilon = 10^{-4}$.
+- **Filter Parameters:** $N = 32\text{ taps}$, $\mu = 0.05$, $\epsilon = 10^{-4}$.
 - **Convergence:** Adapts within 100–200 samples (0.1–0.2 seconds at 1 kHz), dynamically tracking impedance shifts caused by maternal respiration and uterine contractions.
 
 ---
@@ -88,7 +88,7 @@ By deploying AURA-MOM PRO, we achieve profound clinical and human benefits:
 * **Clinical Gold-Standard Accuracy:** As demonstrated below, our system perfectly extracts the fetal QRS complexes, providing obstetricians with the exact same diagnostic fidelity as the invasive scalp electrode, without any of the risks.
 
 <div align="center">
-  <img src="docs/assets/waveform_extraction_real_data.png" alt="Signal Extraction Waveform" width="95%" style="margin: 15px 0;" />
+  <img src="docs/media/waveform_extraction_real_data.png" alt="Signal Extraction Waveform" width="95%" style="margin: 15px 0;" />
   <br><em>Real-world Extraction: Isolating the Fetal QRS (Blue) from the massive Maternal baseline (Orange).</em>
 </div>
 
@@ -99,7 +99,7 @@ By deploying AURA-MOM PRO, we achieve profound clinical and human benefits:
 The extracted fetal heartbeat and maternal vitals are transmitted securely via Bluetooth Low Energy (BLE) to a centralized clinical dashboard. 
 
 <div align="center">
-  <img src="docs/assets/dashboard_screenshot.png" alt="Clinical Dashboard" width="90%" style="border-radius: 8px; border: 1px solid #ccc; margin: 15px 0;" />
+  <img src="docs/media/dashboard_screenshot.jpg" alt="Clinical Dashboard" width="90%" style="border-radius: 8px; border: 1px solid #ccc; margin: 15px 0;" />
   <br><em>Real-Time Obstetric Dashboard for Physician Monitoring</em>
 </div>
 
@@ -118,32 +118,32 @@ pip install -r requirements.txt
 
 ### Step 2: Reproduce the Validated Primary NLMS Baseline
 ```bash
-python ml/classical/nlms.py
+python src/classical/nlms.py
 ```
 *Loads PhysioNet ADFECGDB held-out subject `r10` and calculates RMSE (`0.1005 mV`) and MAE (`0.0810 mV`) dynamically from raw `.dat` records.*
 
 ### Step 3: Run the Preliminary 1D-W-NETR AI Benchmark
 ```bash
-python experiments/evaluate_ai.py
+python experiments/evaluation/evaluate_ai.py
 ```
 *Evaluates the Transformer benchmark checkpoint across the held-out test split, confirming RMSE (`0.43398 mV`) and dumping results to `results/proposal_metrics.json`.*
 
 ### Step 4: Regenerate the 4-Panel Physiological Waveform Verification Plot
 ```bash
-python experiments/generate_figures.py
+python experiments/evaluation/generate_figures.py
 ```
 *Generates publication-quality waveform figures from raw ADFECGDB signals into `results/figures/extraction_results.png`.*
 
 ### Step 5: Recompile the Official 22-Page Proposal PDF
 ```bash
-python generate_stage1_proposal.py
+python scripts/generate_stage1_proposal.py
 ```
 *Compiles [`AURA_MOM_PRO_Vishwakarma_Stage1_Proposal.pdf`](AURA_MOM_PRO_Vishwakarma_Stage1_Proposal.pdf) in ~4 seconds using ReportLab.*
 
 ### Step 6: Launch the Live Clinical Monitor & Presentation Deck
 Open either file in any modern web browser (Chrome, Edge):
-- **Clinical Monitoring Visualizer:** [`dashboard/index.html`](dashboard/index.html) *(or view hosted demo at [`atharveeee-netizen.github.io/MOM/`](https://atharveeee-netizen.github.io/MOM/))*
-- **Presentation Deck:** [`dashboard/presentation.html`](dashboard/presentation.html)
+- **Clinical Monitoring Visualizer:** [`app/frontend/dashboard/index.html`](app/frontend/dashboard/index.html) *(or view hosted demo at [`atharveeee-netizen.github.io/MOM/`](https://atharveeee-netizen.github.io/MOM/))*
+- **Presentation Deck:** [`app/frontend/dashboard/presentation.html`](app/frontend/dashboard/presentation.html)
 
 ---
 
