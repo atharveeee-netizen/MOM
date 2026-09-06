@@ -1,0 +1,47 @@
+# Syzygy W-NETR Orchestration Config (YAML)
+# AURA-MOM PRO Research Pipeline
+
+experiment:
+  name: "wnetr_adfecgdb_baseline"
+  desc: "Baseline W-NETR training on ADFECGDB against canonical 32-tap NLMS"
+
+hardware:
+  device: "cpu" # Default fallback; overridden if CUDA available
+  workers: 4
+  precision: 32 # float32
+
+data:
+  dataset_name: "ADFECGDB"
+  train_split: "data/splits/train.csv"
+  val_split: "data/splits/validation.csv"
+  test_split: "data/splits/test.csv"
+  
+  # Structural bounds
+  channels: 1
+  sequence_length: 992
+  target_hz: 1000
+
+training:
+  epochs: 300 # Full convergence run (~45 hr on CPU)
+  batch_size: 8
+  learning_rate: 1.0e-4
+  weight_decay: 1.0e-5
+  optimizer: "AdamW"
+  
+  # Validation / Convergence metrics
+  early_stopping_patience: 25
+  primary_metric: "val_rmse"
+  
+  # Seed ensemble
+  seeds: [42, 123, 2026]
+
+loss:
+  # L1 + 0.1 * Pearson correlation
+  type: "L1_Pearson_Hybrid"
+  l1_weight: 1.0
+  pearson_weight: 0.1
+
+checkpoints:
+  save_dir: "results/checkpoints/wnetr/"
+  save_best_only: true
+  save_frequency: "epoch"

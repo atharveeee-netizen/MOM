@@ -1,0 +1,5 @@
+Dataset,Provenance,Type,Subjects,SamplingRate,PublicLicense,Notes
+ADFECGDB,PhysioNet (10.13026/C2X019),Clinical Human,5 (r01/r04/r07/r08/r10),1000 Hz,Open,Canonical submission baseline. 4 abdominal leads + 1 maternal.
+FECGSYNDB,PhysioNet (10.13026/C2707D),Synthetic/Simulated,10 (sub01-sub10),250 Hz,Open,Simulated physiological data. Requires resampling to 1000 Hz.
+NInFEA,PhysioNet (10.13026/651v-ms39),Clinical Human,39 (various),1000 Hz,Open,Non-invasive maternal/fetal ECG. 
+PCDB,PhysioNet (10.13026/7t6n-2x34),Clinical Human,74,1000 Hz,Open,Fetal ECG Arrhythmia database. Selected as challenging generalization 4th dataset.

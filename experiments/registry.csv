@@ -1,0 +1,2 @@
+run_id,date,git_sha,dataset,split,model,seed,config,checkpoint,best_epoch,RMSE,MAE,correlation,runtime,notes
+wnetr_run_001,2026-09-06,pending,ADFECGDB,TEST,W-NETR,42,configs/wnetr_training.yaml,pending,TBD,TBD,TBD,TBD,TBD,Initial 45-hr CPU convergence run.

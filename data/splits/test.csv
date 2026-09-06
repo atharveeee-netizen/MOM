@@ -1,0 +1,6 @@
+Dataset,Subject,Recording,Split,SamplingRate
+ADFECGDB,r10,r10_run1,TEST,1000
+FECGSYNDB,sub09,sub09_run1,TEST,1000
+FECGSYNDB,sub10,sub10_run1,TEST,1000
+NInFEA,sub05,sub05_run1,TEST,1000
+PCDB,ARR05,ARR05_run1,TEST,1000

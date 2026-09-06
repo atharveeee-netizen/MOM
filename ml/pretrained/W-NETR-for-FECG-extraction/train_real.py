@@ -50,15 +50,13 @@ def main():
     
     os.makedirs('models', exist_ok=True)
     # Epoch Loop
-    for epoch in range(1):
+    for epoch in range(int(opt.epochs)):
         net.train()
         running_loss = 0.0
         start_time = time.time()
         
         # Train Loop
         for i, train_data in enumerate(train_loader):
-            if i > 1:
-                break
             inputs, fecg_label = train_data
             
             inputs = np.einsum('ijk->ikj', inputs)
@@ -81,15 +79,13 @@ def main():
             
             running_loss += loss.item()
             
-        train_loss = running_loss / min(2, len(train_loader))
+        train_loss = running_loss / len(train_loader)
         
         # Val Loop
         net.eval()
         val_loss = 0.0
         with torch.no_grad():
             for i, val_data in enumerate(val_loader):
-                if i > 1:
-                    break
                 inputs, fecg_label = val_data
                 
                 inputs = np.einsum('ijk->ikj', inputs)
@@ -106,9 +102,9 @@ def main():
                 
                 val_loss += v_loss.item()
                 
-        val_loss /= min(2, len(val_loader))
+        val_loss /= len(val_loader)
         
-        print(f"Epoch [{epoch+1}/1] - Time: {time.time()-start_time:.1f}s - Train Loss: {train_loss:.5f} - Val Loss: {val_loss:.5f}")
+        print(f"Epoch [{epoch+1}/{opt.epochs}] - Time: {time.time()-start_time:.1f}s - Train Loss: {train_loss:.5f} - Val Loss: {val_loss:.5f}")
         
         if val_loss < best_val_loss:
             best_val_loss = val_loss
