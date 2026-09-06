@@ -146,7 +146,10 @@ def make_metric_card(number_str, label_str, subtext_str, width=125, color=C_ACCE
     ]))
     return t
 
-def build_pdf(filename="AURA_MOM_PRO_Vishwakarma_Stage1_Proposal.pdf"):
+def build_pdf(filename=None):
+    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+    if filename is None:
+        filename = os.path.join(repo_root, "submission", "proposal", "AURA_MOM_PRO_Vishwakarma_Stage1_Proposal.pdf")
     print(f"Initializing Stage-1 Proposal generation: {filename}")
     
     doc = SimpleDocTemplate(
@@ -176,7 +179,10 @@ def build_pdf(filename="AURA_MOM_PRO_Vishwakarma_Stage1_Proposal.pdf"):
     s_td_bold = ParagraphStyle('TableDataBold', fontName='Helvetica-Bold', fontSize=7, leading=8.8, textColor=C_PRIMARY)
     
     story = []
-    assets_dir = os.path.join(os.path.dirname(__file__), "docs", "assets")
+    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+    assets_dir = os.path.join(repo_root, "docs", "media")
+    if not os.path.exists(assets_dir):
+        assets_dir = os.path.join(repo_root, "docs", "assets")
     
     # =========================================================================
     # PAGE 1 — COVER PAGE
