@@ -25,7 +25,7 @@ AURA-MOM PRO replaces bulky ultrasound hardware with a **sub-₹5,000 COTS (Comm
 ### 1. The Wearable Architecture
 To eliminate skin abrasions, taped lead tangles, and complex clinical setup, AURA-MOM PRO utilizes a **2-piece modular architecture**: a washable elastic maternity belt and a dockable, lightweight electronics pod.
 
-![AURA-MOM PRO Belt Design](assets/images/belt_design.png)
+![AURA-MOM PRO Belt Design](assets/images/belt_design.jpg)
 
 - **Washable Belt:** Wide neoprene/spandex maternity band with embedded snap rivets and internal silicone routing sleeves.
 - **Dry/Gel Electrodes:** Standard snap-on Ag/AgCl electrodes connect directly to the inner surface of the belt.
