@@ -25,27 +25,35 @@ AURA-MOM PRO replaces bulky ultrasound hardware with a **sub-₹5,000 COTS (Comm
 ### 1. The Wearable Architecture
 To eliminate skin abrasions, taped lead tangles, and complex clinical setup, AURA-MOM PRO utilizes a **2-piece modular architecture**: a washable elastic maternity belt and a dockable, lightweight electronics pod.
 
-- **Washable Belt:** Wide neoprene/spandex maternity band with embedded snap rivets and internal silicone routing sleeves.
-- **Dry/Gel Electrodes:** Standard snap-on Ag/AgCl electrodes connect directly to the inner surface of the belt in a diamond configuration around the abdomen.
-- **Chest Lead:** A single 40 cm silicone-jacketed lead wire connecting to a maternal thoracic reference electrode (Lead II placement below left clavicle).
-- **Dockable Electronics Pod:** Compact 3D-printed enclosure (50×35×15 mm, ~35g) housing the AFE, MCU, and rechargeable Li-Po battery. Snaps directly onto the belt via a keyed multi-pin JST connector.
+![AURA-MOM Wearable Belt Design](assets/images/belt_design.jpg)
+
+- **Medical-Grade Neoprene Belt:** Wide, breathable elastic band with an integrated high-grip Velcro closure system for universal abdominal fitment.
+- **Biopotential Electrodes:** Standard Ag/AgCl snap biopotential electrodes embedded directly on the inner surface in a 4-channel diamond configuration around the abdomen.
+- **Driven Right Leg (DRL):** Integrated ground snap electrode positioned at the lower abdomen to actively suppress common-mode mains hum.
+- **Maternal Thoracic Lead:** A single 40 cm silicone-jacketed lead wire connecting to a thoracic snap electrode pad placed below the left clavicle for reference maternal cardiac activity.
+- **Dockable Electronics Pod:** Compact 3D-printed PETG enclosure (50×35×15 mm, ~35g) that docks securely onto the belt.
 
 ---
 
-### 2. Hardware Subsystem (COTS Stack)
-To guarantee rapid reproducibility, zero custom PCB fabrication lead time, and supply-chain resilience, the prototype is built strictly on proven, modular commercial off-the-shelf modules:
+### 2. Hardware Subsystem (COTS Modular Stack)
+To guarantee rapid reproducibility, zero custom PCB fabrication lead time, and supply-chain resilience, the electronics pod is engineered around proven, off-the-shelf breakout modules housed in a snap-fit 3D-printed enclosure:
+
+![Dockable Pod Hardware Exploded View](assets/images/pod_hardware_exploded.png)
 
 | Subsystem | Component | Specifications | Justification |
 | :--- | :--- | :--- | :--- |
-| **Analog Front-End (AFE)** | Texas Instruments ADS1292R Breakout | 24-bit delta-sigma ADC, 2 differential channels, 120 dB CMRR, integrated RLD amplifier | High common-mode rejection to suppress maternal motion artifacts and powerline hum without saturation. |
+| **Analog Front-End (AFE)** | ProtoCentral ADS1292R Breakout | 24-bit delta-sigma ADC, 2 differential channels, 120 dB CMRR, integrated RLD amplifier | High common-mode rejection to suppress maternal motion artifacts and powerline hum without saturation. |
 | **Microcontroller & BLE** | Seeed Studio XIAO BLE (Nordic nRF52840) | 32-bit ARM Cortex-M4F @ 64 MHz, Hardware FPU, 1 MB Flash, 256 KB RAM, BLE 5.0 | On-chip hardware floating-point unit handles per-sample NLMS adaptive filter calculations in under 8 µs. |
-| **Power Management** | 3.7V 500–1000 mAh Li-Po Cell | USB-C charging via integrated MCP73831 charger | >72 hours estimated continuous operation under ~5 mA average current draw. |
+| **Power Management** | 3.7V 500 mAh LiPo Cell | USB-C charging via integrated MCP73831 charging circuit with JST wiring | >72 hours estimated continuous operation under ~5 mA average current draw. |
+| **Enclosure** | 3D Printed PETG Casing | Snap-fit base casing (50×35×15 mm) + vented top cover | Lightweight (~35g total), drop-resistant, and easily sanitizable with isopropyl alcohol. |
 | **BOM Cost** | Total Module Stack | **₹3,800 – ₹5,500** ($45 – $65 USD) | >90% cheaper than clinical CTG monitors. |
 
 ---
 
 ### 3. End-to-End System Topology
 All filtering, cancellation, and metric derivations execute locally on the wearable edge device. No raw patient biopotentials are offloaded to cloud servers, ensuring strict clinical privacy and 100% functionality without internet access.
+
+![System Architecture](assets/images/architecture.png)
 
 ```text
 [Maternal Body]
@@ -64,14 +72,16 @@ All filtering, cancellation, and metric derivations execute locally on the weara
                                                              │
                                                              │ BLE 5.0 (GATT Notification)
                                                              ▼
-                                                [Gateway / Tablet Display]
-                                                  └── HTML5 Canvas Dashboard @ 60 FPS
+                                                [Clinical Tablet Dashboard / Phone]
+                                                  └── Real-Time Waveforms & Color-Coded Triage
 ```
 
 ---
 
 ### 4. Real-Time Clinical Application & Telemetry
-The companion application (running as a local HTML5 dashboard or Android telemetry client) provides frontline healthcare workers (such as ANMs/ASHAs at Ayushman Bharat Sub-Centres) with an immediate, color-coded triage display:
+The companion application provides frontline healthcare workers (such as ANMs/ASHAs at Ayushman Bharat Sub-Centres) with an immediate, color-coded triage display:
+
+![Clinical Mobile Application](assets/images/app_dashboard.png)
 
 - **Instant Triage:** Displays real-time Fetal Heart Rate (FHR: 135 BPM) inside the standard 110–160 BPM normal band, Maternal HR (78 BPM), and Signal Quality Index (SQI: 2.56 [EXCELLENT]).
 - **Live Morphology:** Continuous fECG waveform rendering on calibrated clinical ECG grid paper.
@@ -123,8 +133,8 @@ AURA-MOM PRO implements a **Normalized Least Mean Squares (NLMS)** adaptive filt
 Where:
 - $\mathbf{x}[n] = [x[n], x[n-1], \dots, x[n-L+1]]^T$ is the maternal thoracic reference vector ($L = 10$ taps).
 - $\mathbf{w}[n]$ is the adaptive weight vector.
-- $\mu$ is the adaptive learning rate / step size.
-- $\epsilon$ is a regularization constant preventing numerical division by zero.
+- $\mu$ is the adaptive learning rate / step size ($\mu \approx 0.05$).
+- $\epsilon$ is a regularization constant preventing numerical division by zero ($\epsilon = 10^{-6}$).
 
 Because the weights update on every single sample, the filter continuously adapts to maternal heart rate changes, postural shifts, and respiratory baseline modulation beat-to-beat without requiring pre-trained weights.
 
@@ -151,24 +161,27 @@ Below are the experimental results of our 10-tap NLMS filter evaluated on held-o
 
 ---
 
-## ⚖️ Quantitative Architecture Comparison: Why Edge DSP Over Deep Learning
+## ⚖️ Deep Learning vs. Edge DSP Benchmark (1D W-NETR Evaluation)
 
-A critical architectural decision was made to **reject deep learning models (e.g., W-NETR 1D-CNN, U-Net)** for real-time wearable extraction in favor of classical adaptive DSP. 
+In addition to classical adaptive DSP, we evaluated a deep neural network architecture as an offline research benchmark: the **1D W-NETR (Wavelet-based Vision Transformer)** for fetal ECG extraction (Almadani et al., *IEEE JBHI*, 2023, DOI: [10.1109/JBHI.2023.3266645](https://doi.org/10.1109/JBHI.2023.3266645)).
 
-Below is the quantitative evaluation comparing our validated NLMS algorithm with deep neural network approaches:
+The offline deep learning model was trained and evaluated against the identical held-out ADFECGDB record `r10` protocol:
 
-| Evaluation Dimension | Classical 10-tap NLMS (AURA-MOM PRO) | 1D-CNN / W-NETR Deep Learning | Impact on Deployment |
+| Evaluation Dimension | Classical 10-tap NLMS (Deployable Edge) | 1D W-NETR (Offline Research Benchmark) | System Impact & Clinical Rationale |
 | :--- | :--- | :--- | :--- |
-| **Parameter Count** | **10 coefficients** | > 1,850,000 weights | 185,000× parameter reduction |
-| **Model Size** | **40 bytes** | ~28.4 MB | Fits in nRF52840 register cache; DL requires external flash |
-| **RAM Requirement** | **< 1 KB** | 16–32 MB | Cannot run on low-power Cortex-M0/M4 microcontrollers |
-| **Inference Latency** | **7.5 µs** | 142 ms | Deterministic hard real-time vs. frame-buffered delay |
-| **Hardware Platform** | **Seeed XIAO nRF52840 (₹1,200)** | Edge TPU / Raspberry Pi 4 (₹6,500–12,000) | **>5× reduction in hardware bill of materials** |
-| **Operating Power** | **~5 mA @ 3.3V (<17 mW)** | > 2.5 W | >72 hr battery life vs. 3–4 hr thermal runaway |
-| **Interpretability** | **Deterministic mathematics** | Stochastic Black-Box | Crucial for CDSCO / FDA SaMD medical certification |
-| **Generalization** | Adapts beat-to-beat in real-time | Severe drop in cross-dataset distribution shifts | Eliminates training distribution bias |
+| **RMSE (on r10)** | **0.1005 mV** | 0.43398 mV | Classical NLMS demonstrates superior baseline tracking on sample-constrained data. |
+| **MAE (on r10)** | **0.0810 mV** | 0.35313 mV | NLMS minimizes maternal residual leakage beat-to-beat. |
+| **Inference Latency** | **~7.5 µs / sample** | ~12 ms (GPU batch) / 142 ms (CPU) | NLMS achieves hard real-time streaming; DL introduces frame buffering. |
+| **Model Size / Weights** | **40 bytes** (10 float coefficients) | ~28.4 MB (transformer weights) | NLMS fits in MCU L1 cache; DL requires external multi-MB Flash/RAM. |
+| **RAM Footprint** | **< 1 KB** | 16–32 MB | NLMS executes on $5 microcontroller; DL cannot run on Cortex-M4F. |
+| **Hardware Platform** | **Seeed XIAO nRF52840 (₹1,200)** | GPU Workstation / Edge TPU (₹12,000+) | **>5× reduction in hardware bill of materials.** |
+| **Power Consumption** | **~5 mA @ 3.3V (<17 mW)** | > 2.5 W | >72 hour battery life vs. rapid thermal depletion. |
+| **Explainability** | **Deterministic mathematics** | Stochastic Black-Box | Deterministic filter state streamlines CDSCO / FDA SaMD regulatory clearance. |
+| **Adaptability** | Adapts beat-to-beat continuously | Sensitive to cross-dataset distribution shifts | Eliminates training set demographic bias. |
 
-*Verdict:* While deep neural networks (W-NETR) remain valuable for offline medical imaging research, **classical NLMS DSP is the only viable, scalable path for low-cost, battery-operated edge clinical wearables.**
+### Dual-Track Strategy
+1. **Edge Deployment (Production):** Classical 10-tap NLMS runs autonomously on the wearable Seeed XIAO nRF52840 pod, delivering instant, battery-efficient FHR and fECG morphology at primary health sub-centres.
+2. **Centralized Research Track (Offline):** The 1D W-NETR codebase is maintained in [`src/ai/W-NETR-for-FECG-extraction/`](src/ai/W-NETR-for-FECG-extraction/) for offline GPU batch processing, cross-dataset pretraining (PCDB, NIFECGDB, FECGSYN), and future central hospital server deployment where high compute is available.
 
 ---
 
@@ -188,7 +201,7 @@ AURA-MOM PRO is built specifically for frontline health workers (such as ASHA an
     └───────────┬────────────┘
                 ▼
     ┌────────────────────────┐
-    │ 3. DOCK (5 seconds)    │  Clip the electronics pod onto the belt JST connector and
+    │ 3. DOCK (5 seconds)    │  Clip the electronics pod onto the belt connector and
     │                        │  toggle the tactile power switch.
     └───────────┬────────────┘
                 ▼
@@ -240,7 +253,15 @@ python scripts/generate_plots.py
 ```
 *The resulting plot will be saved to `results/nlms_convergence_results.png`.*
 
-### 3. Real-Time Web Dashboard
+### 3. Offline Deep Learning Benchmark (1D W-NETR)
+To inspect and run the offline deep learning benchmark:
+```bash
+cd src/ai/W-NETR-for-FECG-extraction
+pip install -r requirements.txt
+python test_real.py
+```
+
+### 4. Real-Time Web Dashboard
 To launch the interactive clinical dashboard:
 ```bash
 # Simply open index.html in any modern browser (Chrome, Edge, Firefox)
@@ -255,19 +276,25 @@ Navigate to `http://localhost:3000` to view real-time waveform rendering and met
 
 ```text
 MOM/
-├── assets/                         # Supplemental project assets
+├── assets/
+│   └── images/
+│       ├── belt_design.jpg             # Wearable belt with snap electrodes & dockable pod
+│       ├── pod_hardware_exploded.png   # 3D exploded view of COTS modular hardware stack
+│       ├── architecture.png            # Complete end-to-end system topology diagram
+│       └── app_dashboard.png           # Clinical mobile app in hand (Ayushman Sub-Centre)
 ├── results/
-│   └── nlms_convergence_results.png # Validated MATLAB/Python extraction plot
+│   └── nlms_convergence_results.png    # Validated MATLAB/Simulink DSP extraction plot
 ├── scripts/
-│   ├── generate_plots.py           # Python DSP simulation & plot generator
-│   └── nlms_fecg_extraction.m      # Native MATLAB NLMS extraction script
+│   ├── generate_plots.py               # Python DSP simulation & plot generator
+│   └── nlms_fecg_extraction.m          # Native MATLAB NLMS extraction script
 ├── src/
-│   ├── ai/                         # Offline research track (W-NETR benchmark)
-│   └── classical/                  # Classical DSP modules (NLMS, Pan-Tompkins)
-├── docs/                           # Technical validation & architecture notes
-├── index.html                      # HTML5 Canvas real-time clinical dashboard
-├── LICENSE                         # MIT License
-└── README.md                       # Master engineering documentation
+│   ├── ai/                             # Offline research track (1D W-NETR benchmark)
+│   │   └── W-NETR-for-FECG-extraction/ # 1D Transformer network, weights & training scripts
+│   └── classical/                      # Classical DSP modules (NLMS, Pan-Tompkins)
+├── docs/                               # Technical validation & architecture notes
+├── index.html                          # HTML5 Canvas real-time clinical dashboard
+├── LICENSE                             # MIT License
+└── README.md                           # Master engineering documentation
 ```
 
 ---
