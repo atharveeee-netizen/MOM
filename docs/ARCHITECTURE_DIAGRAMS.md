@@ -1,73 +1,67 @@
 # AURA-MOM PRO: Architecture & Engineering Specifications
-**Vishwakarma Awards Technical Dossier**
+**Open-Source Engineering & Hardware Dossier**
 
 This document provides the complete hardware, firmware, and algorithmic architecture diagrams for the AURA-MOM PRO continuous maternal-fetal monitoring system.
 
 ---
 
-## 1. Physical Hardware Architecture
+## 1. Physical Hardware Architecture (Modular COTS Stack)
 
-The AURA-MOM PRO wearable hardware comprises four tightly coupled sub-systems designed for high-precision bio-potential acquisition, deterministic real-time processing, and ultra-low-power telemetry.
+The AURA-MOM PRO wearable hardware comprises four tightly coupled sub-systems designed for high-precision biopotential acquisition, deterministic real-time processing, and ultra-low-power telemetry using commercial off-the-shelf modules:
 
 ```mermaid
 graph TD
-    subgraph "Maternal Abdomen Interface"
-        LEAD1["Lead 1: Abdominal Differential (d[n])"]
-        LEAD2["Lead 2: Maternal Reference (x[n])"]
-        LEAD3["Lead 3: Auxiliary Abdominal"]
-        LEAD4["Lead 4: Auxiliary Abdominal"]
-        RLD["Right Leg Drive (DRL Active Common-Mode Suppression)"]
+    subgraph "Maternal Belt Interface"
+        LEAD1["4× Abdominal Snap Electrodes (Diamond Configuration)"]
+        LEAD2["1× Maternal Thoracic Lead (Chest Reference Lead II)"]
+        RLD["1× Driven Right Leg (DRL Active Common-Mode Suppression)"]
     end
 
-    subgraph "Analog Front End (AFE) - TI ADS1298"
-        ESD["ESD Protection & EMI RC Filtering"]
-        MUX["Input MUX & Impedance Check"]
+    subgraph "Analog Front End (AFE) - ProtoCentral ADS1292R"
+        ESD["ESD Protection & EMI Filtering"]
+        MUX["Input MUX & Lead-Off Detection"]
         PGA["Low-Noise PGAs (Gain: 1x to 12x)"]
-        ADC["8x 24-bit Simultaneous Delta-Sigma ADCs (1000 SPS)"]
-        SPI_AFE["High-Speed SPI Slave Interface (4 MHz)"]
+        ADC["24-bit Simultaneous Delta-Sigma ADCs (1000 SPS)"]
+        SPI_AFE["High-Speed SPI Interface"]
         
         ESD --> MUX --> PGA --> ADC --> SPI_AFE
     end
 
-    subgraph "Embedded Processing Unit - Nordic nRF52840 SoC"
-        SPI_MASTER["SPI Master (EasyDMA Circular Buffer)"]
+    subgraph "Embedded Compute & Radio - Seeed Studio XIAO BLE"
+        SPI_MASTER["SPI Master Interface"]
         CORTEX["ARM Cortex-M4F Core @ 64 MHz\nHardware Single-Precision FPU\n1MB Flash | 256KB SRAM"]
-        DSP_CORE["Deterministic Real-Time Edge DSP Engine\n• Preprocessing (Bandpass + Notch)\n• NLMS Adaptive Cancellation (7.5 µs/sample)\n• FQRS Peak Detection & FHR Calculation\n• SQI & EHG Contraction Energy"]
-        BLE_STACK["Nordic SoftDevice S140 (BLE 5.0 Controller)\n2 Mbps PHY / Long Range Coded PHY"]
+        DSP_CORE["Deterministic Real-Time Edge DSP Engine\n• Preprocessing (Bandpass + Notch)\n• NLMS Adaptive Cancellation (~7.5 µs/sample)\n• Pan-Tompkins fQRS Detection & FHR Calculation\n• SQI Estimation"]
+        BLE_STACK["Nordic SoftDevice (BLE 5.0 Controller)\nGATT Telemetry Service"]
         
         SPI_MASTER --> CORTEX
         CORTEX --> DSP_CORE
         DSP_CORE --> BLE_STACK
     end
 
-    subgraph "Power Management Subsystem (PMIC)"
-        BATT["3.7V 2000 mAh Li-Po Cell"]
-        CHARGER["TI BQ24075 USB-C Li-Po Charger & Power-Path"]
-        LDO["TPS73633 Ultra-Low Noise 3.3V LDO (400 mA)"]
-        SUPERVISOR["Voltage Supervisor & Fuel Gauge"]
+    subgraph "Power Management Subsystem (500 mAh LiPo)"
+        BATT["3.7V 500 mAh Li-Po Cell"]
+        CHARGER["USB-C Integrated MCP73831 Li-Po Charger"]
+        LDO["Ultra-Low Noise 3.3V LDO"]
         
         BATT --> CHARGER --> LDO
-        CHARGER --> SUPERVISOR --> CORTEX
         LDO -->|VDD 3.3V Clean Analog/Digital| AFE
-        LDO -->|VDD 3.3V Digital| nRF52840
+        LDO -->|VDD 3.3V Digital| CORTEX
     end
 
     subgraph "Clinical Gateway & Visualization Tier"
-        RADIO["2.4 GHz Ceramic Antennna"]
-        DASHBOARD["AURA-MOM Clinical Dashboard\n(Web Bluetooth API / Real-Time Telemetry Replay)"]
-        CLOUD["Optional Cloud Research Tier\n(Experimental 1D-W-NETR Transformer Benchmark)"]
+        RADIO["2.4 GHz BLE Antenna"]
+        DASHBOARD["AURA-MOM Clinical Dashboard\n(HTML5 Canvas / Mobile Telemetry App)"]
+        RESEARCH["Centralized Research Tier\n(Offline 1D W-NETR Transformer Benchmark)"]
         
         BLE_STACK --> RADIO
-        RADIO -.->|BLE 5.0 GATT Telemetry Packets| DASHBOARD
-        DASHBOARD -.->|Periodic Telemetry Sync| CLOUD
+        RADIO -.->|BLE 5.0 GATT Telemetry| DASHBOARD
+        DASHBOARD -.->|Batch Dataset Sync| RESEARCH
     end
 
     LEAD1 --> ESD
     LEAD2 --> ESD
-    LEAD3 --> ESD
-    LEAD4 --> ESD
     RLD <--|Inverted Common-Mode Feedback| MUX
-    SPI_AFE -->|24-Bit Frame Interrupt (1000 Hz)| SPI_MASTER
+    SPI_AFE -->|24-Bit Frame (1000 Hz)| SPI_MASTER
 ```
 
 ---
