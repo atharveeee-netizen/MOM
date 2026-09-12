@@ -220,55 +220,7 @@ To assess the trade-offs between on-device deterministic filtering and deep lear
 
 ---
 
-## 8. Open Science, Verification & Access Badges
-
-<table width="100%">
-  <tr>
-    <td width="33.3%" align="center" valign="top">
-      <img src="docs/media/qr_github_repo.png" alt="GitHub Repository QR" width="160"/>
-      <br/>
-      <b>Figure 15: Source Repository</b>
-      <br/>
-      <a href="https://github.com/atharveeee-netizen/MOM">github.com/atharveeee-netizen/MOM</a>
-      <p align="center"><em>Firmware, CAD STLs & DSP scripts</em></p>
-    </td>
-    <td width="33.3%" align="center" valign="top">
-      <img src="docs/media/qr_live_dashboard.png" alt="Live Dashboard QR" width="160"/>
-      <br/>
-      <b>Figure 16: Clinical Dashboard</b>
-      <br/>
-      <a href="https://atharveeee-netizen.github.io/MOM/">Interactive Web Telemetry</a>
-      <p align="center"><em>Zero-install live clinical simulator</em></p>
-    </td>
-    <td width="33.3%" align="center" valign="top">
-      <img src="docs/media/qr_results_metrics.png" alt="Results Ledger QR" width="160"/>
-      <br/>
-      <b>Figure 17: Results & Ledgers</b>
-      <br/>
-      <a href="docs/RESEARCH_HANDOVER_AND_AUDIT.md">docs/RESEARCH_HANDOVER.md</a>
-      <p align="center"><em>Raw logs, metrics & audit data</em></p>
-    </td>
-  </tr>
-</table>
-
-### Reproducibility & Execution
-```bash
-# 1. Clone repository
-git clone https://github.com/atharveeee-netizen/MOM.git
-cd MOM
-
-# 2. Run validated Python DSP simulation & generate figures
-pip install numpy scipy matplotlib
-python scripts/generate_plots.py
-
-# 3. Launch interactive clinical telemetry dashboard
-npx serve .
-# Open http://localhost:3000 in any browser
-```
-
----
-
-## 9. Regulatory & Clinical Disclaimer
+## 8. Regulatory & Clinical Disclaimer
 *AURA-MOM PRO is an academic engineering research prototype developed for open-source evaluation. It has not received clearance or certification as a medical device from the Central Drugs Standard Control Organisation (CDSCO), the US Food and Drug Administration (FDA), or the European Medicines Agency (EMA). It is not intended for standalone diagnostic use.*
 
 ## 📜 License
