@@ -4,7 +4,7 @@
 
 [![Hardware Target: nRF52840](https://img.shields.io/badge/MCU-Nordic_nRF52840_(Cortex--M4F)-00A9CE.svg)](#-hardware-subsystem-cots-stack)
 [![AFE: ADS1292R](https://img.shields.io/badge/AFE-TI_ADS1292R_24--bit_120dB_CMRR-CC0000.svg)](#-hardware-subsystem-cots-stack)
-[![DSP Engine: 10-tap NLMS](https://img.shields.io/badge/Primary_DSP-10--tap_NLMS_Adaptive_Filter-10B981.svg)](#-dsp-algorithm-fetal-ecg-extraction)
+[![DSP Engine: 10-tap NLMS](https://img.shields.io/badge/Primary_DSP-10--tap_NLMS_Adaptive_Filter-10B981.svg)](#-signal-processing-algorithm-nlms-adaptive-filtering)
 [![Benchmark: PhysioNet ADFECGDB](https://img.shields.io/badge/Dataset-PhysioNet_ADFECGDB_r10-4F46E5.svg)](#-experimental-validation--results)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
@@ -20,15 +20,14 @@ AURA-MOM PRO replaces bulky ultrasound hardware with a **sub-₹5,000 COTS (Comm
 
 ---
 
-## 📸 System Overview
+## 🏗️ System Overview
 
 ### 1. The Wearable Architecture
 To eliminate skin abrasions, taped lead tangles, and complex clinical setup, AURA-MOM PRO utilizes a **2-piece modular architecture**: a washable elastic maternity belt and a dockable, lightweight electronics pod.
 
-![AURA-MOM PRO Belt Design](assets/images/belt_design.jpg)
-
 - **Washable Belt:** Wide neoprene/spandex maternity band with embedded snap rivets and internal silicone routing sleeves.
-- **Dry/Gel Electrodes:** Standard snap-on Ag/AgCl electrodes connect directly to the inner surface of the belt.
+- **Dry/Gel Electrodes:** Standard snap-on Ag/AgCl electrodes connect directly to the inner surface of the belt in a diamond configuration around the abdomen.
+- **Chest Lead:** A single 40 cm silicone-jacketed lead wire connecting to a maternal thoracic reference electrode (Lead II placement below left clavicle).
 - **Dockable Electronics Pod:** Compact 3D-printed enclosure (50×35×15 mm, ~35g) housing the AFE, MCU, and rechargeable Li-Po battery. Snaps directly onto the belt via a keyed multi-pin JST connector.
 
 ---
@@ -38,17 +37,15 @@ To guarantee rapid reproducibility, zero custom PCB fabrication lead time, and s
 
 | Subsystem | Component | Specifications | Justification |
 | :--- | :--- | :--- | :--- |
-| **Analog Front-End (AFE)** | Texas Instruments ADS1292R | 24-bit delta-sigma ADC, 2 differential channels, 120 dB CMRR, integrated RLD amplifier | High common-mode rejection to suppress maternal motion artifacts and powerline hum without saturation. |
+| **Analog Front-End (AFE)** | Texas Instruments ADS1292R Breakout | 24-bit delta-sigma ADC, 2 differential channels, 120 dB CMRR, integrated RLD amplifier | High common-mode rejection to suppress maternal motion artifacts and powerline hum without saturation. |
 | **Microcontroller & BLE** | Seeed Studio XIAO BLE (Nordic nRF52840) | 32-bit ARM Cortex-M4F @ 64 MHz, Hardware FPU, 1 MB Flash, 256 KB RAM, BLE 5.0 | On-chip hardware floating-point unit handles per-sample NLMS adaptive filter calculations in under 8 µs. |
-| **Power Management** | 3.7V 500–1000 mAh Li-Po Cell | USB-C charging via integrated MCP73831 charger | >72 hours continuous operation under ~5 mA average current draw. |
+| **Power Management** | 3.7V 500–1000 mAh Li-Po Cell | USB-C charging via integrated MCP73831 charger | >72 hours estimated continuous operation under ~5 mA average current draw. |
 | **BOM Cost** | Total Module Stack | **₹3,800 – ₹5,500** ($45 – $65 USD) | >90% cheaper than clinical CTG monitors. |
 
 ---
 
 ### 3. End-to-End System Topology
 All filtering, cancellation, and metric derivations execute locally on the wearable edge device. No raw patient biopotentials are offloaded to cloud servers, ensuring strict clinical privacy and 100% functionality without internet access.
-
-![Architecture Diagram](assets/images/architecture.png)
 
 ```text
 [Maternal Body]
@@ -73,10 +70,8 @@ All filtering, cancellation, and metric derivations execute locally on the weara
 
 ---
 
-### 4. Real-Time Clinical Mobile Application
-The companion mobile app provides frontline healthcare workers (such as ANMs/ASHAs at Ayushman Bharat Sub-Centres) with an immediate, color-coded triage display:
-
-![Clinical Mobile App](assets/images/app_dashboard.png)
+### 4. Real-Time Clinical Application & Telemetry
+The companion application (running as a local HTML5 dashboard or Android telemetry client) provides frontline healthcare workers (such as ANMs/ASHAs at Ayushman Bharat Sub-Centres) with an immediate, color-coded triage display:
 
 - **Instant Triage:** Displays real-time Fetal Heart Rate (FHR: 135 BPM) inside the standard 110–160 BPM normal band, Maternal HR (78 BPM), and Signal Quality Index (SQI: 2.56 [EXCELLENT]).
 - **Live Morphology:** Continuous fECG waveform rendering on calibrated clinical ECG grid paper.
@@ -146,12 +141,13 @@ Below are the experimental results of our 10-tap NLMS filter evaluated on held-o
 
 ### Quantitative Metrics on Held-Out Subject (r10)
 
-| Metric | Measured Value | Benchmark Baseline / Clinical Significance |
-| :--- | :--- | :--- |
-| **RMSE (Residual vs. Direct FSE)** | **0.1005 mV** | Demonstrates clean extraction of fetal QRS peaks matching scalp electrode ground truth. |
-| **MAE (Mean Absolute Error)** | **0.0810 mV** | Validates baseline stability and minimal residual maternal leakage. |
-| **MCU Execution Latency** | **7.5 µs / sample** | Feasible for real-time 1 kHz streaming on 64 MHz Cortex-M4F (<1% CPU budget). |
-| **MCU Memory Footprint** | **< 1.0 KB RAM** | Allows ultra-low power retention sleep states and small firmware binary (<48 KB Flash). |
+| Metric | Measured Value | Benchmark Baseline / Clinical Significance | Evidence Basis |
+| :--- | :--- | :--- | :--- |
+| **RMSE (Residual vs. Direct FSE)** | **0.1005 mV** | Demonstrates clean extraction of fetal QRS peaks matching scalp electrode ground truth. | **MEASURED** (ADFECGDB r10) |
+| **MAE (Mean Absolute Error)** | **0.0810 mV** | Validates baseline stability and minimal residual maternal leakage. | **MEASURED** (ADFECGDB r10) |
+| **Computed FHR** | **135.36 BPM** | Extracted from peak-to-peak interval of residual fECG waveform. | **COMPUTED** (Derived from r10) |
+| **MCU Execution Latency** | **~7.5 µs / sample** | Feasible for real-time 1 kHz streaming on 64 MHz Cortex-M4F (<1% CPU budget). | **SIMULATED** (Instruction cycles) |
+| **MCU Memory Footprint** | **< 1.0 KB RAM** | Allows ultra-low power retention sleep states and small firmware binary (<48 KB Flash). | **ESTIMATED** (State buffer math) |
 
 ---
 
@@ -206,15 +202,16 @@ AURA-MOM PRO is built specifically for frontline health workers (such as ASHA an
 
 ## 📑 Claim-Evidence Ledger
 
-In accordance with strict medical engineering standards, all project claims are transparently classified:
+In accordance with strict medical engineering standards, all project claims are transparently classified per their evidence basis:
 
-| Technical Claim | Classification | Evidence Source |
-| :--- | :--- | :--- |
-| NLMS extracts fECG from maternal mixture | **VALIDATED** | PhysioNet ADFECGDB record r10; RMSE = 0.1005 mV, MAE = 0.0810 mV. |
-| Per-sample execution latency is ~7.5 µs | **MEASURED** | Profiler simulation on ARM Cortex-M4F instruction cycles. |
-| Battery life exceeds 72 hours on 500 mAh | **ESTIMATED** | Based on 5 mA average current draw of ADS1292R + nRF52840 BLE peripheral. |
-| Sub-₹5,000 hardware unit cost | **MEASURED** | Actual COTS procurement invoice from Robu.in / Tanotis (ADS1292R + XIAO BLE + LiPo). |
-| Complete non-invasive replacement for hospital CTG | **PROPOSED** | Requires multi-center clinical trials and CDSCO certification before clinical deployment. |
+| Technical Claim | Classification | Evidence Source | Verification Status |
+| :--- | :--- | :--- | :--- |
+| NLMS extracts fECG from maternal mixture | **VALIDATED** | PhysioNet ADFECGDB record r10; RMSE = 0.1005 mV, MAE = 0.0810 mV. | ✅ Verified on clinical dataset |
+| Per-sample execution latency is ~7.5 µs | **SIMULATED** | Software-in-the-loop instruction cycle profiler for Cortex-M4F. | ⚠️ Simulated; pending physical oscilloscope GPIO toggle |
+| Battery life exceeds 72 hours on 500 mAh | **ESTIMATED** | Based on 5 mA average current draw of ADS1292R + nRF52840 BLE peripheral. | ⚠️ Analytical projection; pending physical discharge test |
+| Sub-₹5,000 hardware unit cost | **ESTIMATED** | Web-sourced component pricing (ADS1292R ₹2,200–3,500 + XIAO BLE ₹1,100–1,400 + LiPo ₹250–400). | ✅ Verified component market prices |
+| Physical Hardware Prototype | **PLANNED** | Modular COTS evaluation stack (ADS1292R + XIAO nRF52840). | ⚠️ Software pipeline demonstrated; bench integration planned |
+| Clinical Certification | **NOT CLAIMED** | Requires ethics-approved human trials and CDSCO Class B regulatory pathway. | ✅ Explicitly disclaimed |
 
 ---
 
@@ -258,14 +255,9 @@ Navigate to `http://localhost:3000` to view real-time waveform rendering and met
 
 ```text
 MOM/
-├── assets/
-│   └── images/
-│       ├── app_dashboard.png       # Mobile dashboard screenshot
-│       ├── architecture.png        # Complete system topology diagram
-│       ├── belt_design.png         # Wearable belt & dockable pod render
-│       └── pcb_stackup.png         # COTS hardware evaluation stack
+├── assets/                         # Supplemental project assets
 ├── results/
-│   └── nlms_convergence_results.png # MATLAB/Python convergence plot
+│   └── nlms_convergence_results.png # Validated MATLAB/Python extraction plot
 ├── scripts/
 │   ├── generate_plots.py           # Python DSP simulation & plot generator
 │   └── nlms_fecg_extraction.m      # Native MATLAB NLMS extraction script
